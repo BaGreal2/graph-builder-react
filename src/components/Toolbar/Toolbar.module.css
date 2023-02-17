@@ -1,0 +1,57 @@
+.toolbar {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	box-sizing: border-box;
+	padding: 5px 0 5px 0;
+	width: 50px;
+	max-height: 100vh;
+	background-color: #132439;
+}
+
+.toolsWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	gap: 10px;
+}
+
+.save {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	gap: 10px;
+}
+
+@media only screen and (max-width: 758px) {
+	.toolbar {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		width: 100vw;
+		height: 50px;
+		background-color: #132439;
+		padding: 0 5px 0 5px;
+	}
+	.toolsWrapper {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		height: 100%;
+		width: fit-content;
+		gap: 10px;
+	}
+
+	.save {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		height: 100%;
+		width: 100px;
+		gap: 10px;
+	}
+}
