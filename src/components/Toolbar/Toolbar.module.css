@@ -8,6 +8,7 @@
 	width: 50px;
 	max-height: 100vh;
 	background-color: #132439;
+	position: relative;
 }
 
 .toolsWrapper {
@@ -24,6 +25,17 @@
 	align-items: center;
 	width: 100%;
 	gap: 10px;
+}
+
+.colorInput {
+	position: absolute;
+	left: 60px;
+	border: 2px solid #afcfe4;
+	z-index: 100;
+	border-radius: 2px;
+	width: 60px;
+	height: 60px;
+	cursor: pointer;
 }
 
 @media only screen and (max-width: 758px) {

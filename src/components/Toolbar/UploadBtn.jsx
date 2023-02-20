@@ -3,6 +3,8 @@ import styles from './UploadBtn.module.css';
 
 function UploadBtn({
 	setNodes,
+	setType,
+	setConnectClicks,
 	generateEdges,
 	active,
 	children,
@@ -17,9 +19,12 @@ function UploadBtn({
 		}
 	}
 	function onReaderLoad(e) {
-		let graphArr = JSON.parse(e.target.result);
+		let graphArr = JSON.parse(e.target.result).nodes;
+		let savedType = JSON.parse(e.target.result).type;
 		setNodes(graphArr);
-		generateEdges(graphArr);
+		setType(savedType);
+		setConnectClicks((prev) => prev + 1);
+		generateEdges(graphArr, savedType);
 	}
 	return (
 		<div className={styles.toolContainer}>

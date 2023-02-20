@@ -10,10 +10,12 @@ function App() {
 	const [edges, setEdges] = useState([]);
 	const [nodesSelected, setNodesSelected] = useState([]);
 	const [counter, setCounter] = useState(1);
-	const [weightMode, setWeightMode] = useState(false);
-	const [selectMode, setSelectMode] = useState(true);
 	const [scaleMode, setScaleMode] = useState('');
+	const [selectMode, setSelectMode] = useState(true);
+	const [weightMode, setWeightMode] = useState(false);
 	const [deleteMode, setDeleteMode] = useState(false);
+	const [colorMode, setColorMode] = useState(false);
+	const [type, setType] = useState('');
 
 	function onCreateNode(e) {
 		if (
@@ -46,13 +48,14 @@ function App() {
 		setCounter((prev) => prev + 1);
 	}
 
-	function generateEdges(nodesArr) {
+	function generateEdges(nodesArr, type) {
 		const newEdges = [];
 		nodesArr.map((node) => {
 			node.connections.map((connection) => {
 				let _id = uuid();
 				const node1 = node;
-				const node2 = nodesArr[connection[0]];
+				const node2 = nodesArr.find((node) => node.index - 1 === connection[0]);
+
 				const newEdge = {
 					_id: _id,
 					from: node1.index,
@@ -61,11 +64,11 @@ function App() {
 					index2: node2.connections.length,
 					weight: connection[1],
 					points: getConnectorPoints(node1, node2),
+					type: type,
 				};
 				newEdges.push(newEdge);
 			});
 		});
-		console.log(nodesArr);
 		setEdges(newEdges);
 	}
 
@@ -103,9 +106,13 @@ function App() {
 				scaleModeUp={scaleMode === 'up'}
 				scaleModeDown={scaleMode === 'down'}
 				setScaleMode={setScaleMode}
+				colorMode={colorMode}
+				setColorMode={setColorMode}
 				getConnectorPoints={getConnectorPoints}
 				connectionActive={nodes.filter((node) => node.selected).length > 1}
 				generateEdges={generateEdges}
+				type={type}
+				setType={setType}
 			/>
 			<Stage
 				width={window.innerWidth - 50}
@@ -129,6 +136,8 @@ function App() {
 								index2={edge.index2}
 								weight={edge.weight}
 								points={edge.points}
+								type={edge.type}
+								generateEdges={generateEdges}
 							/>
 						);
 					})}
