@@ -1,4 +1,7 @@
-export default function generateEdges(nodesArr, type) {
+import { v4 as uuid } from 'uuid';
+import getConnectorPoints from './getConnectorPoints';
+
+export default function generateEdges(nodesArr, type, setEdges) {
 	const newEdges = [];
 	nodesArr.map((node) => {
 		node.connections.map((connection) => {

@@ -1,10 +1,11 @@
+import { generateEdges } from '../../helpers';
 import styles from './UploadBtn.module.css';
 
 function UploadBtn({
 	setNodes,
+	setEdges,
 	setType,
 	setConnectClicks,
-	generateEdges,
 	active,
 	children,
 	pressed = false,
@@ -24,7 +25,7 @@ function UploadBtn({
 		setNodes(graphArr);
 		setType(savedType);
 		setConnectClicks((prev) => prev + 1);
-		generateEdges(graphArr, savedType);
+		generateEdges(graphArr, savedType, setEdges);
 	}
 	return (
 		<div className={styles.toolContainer}>

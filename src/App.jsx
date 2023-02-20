@@ -95,6 +95,7 @@ function App() {
 								deleteMode={deleteMode}
 								nodes={nodes}
 								setNodes={setNodes}
+								setEdges={setEdges}
 							/>
 						);
 					})}

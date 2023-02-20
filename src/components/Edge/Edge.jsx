@@ -3,7 +3,7 @@ import { Arrow, Group, Line, Text } from 'react-konva';
 import { generateEdges } from '../../helpers';
 
 const Edge = React.memo(
-	({ edge, fill, weightMode, deleteMode, nodes, setNodes }) => {
+	({ edge, fill, weightMode, deleteMode, nodes, setNodes, setEdges }) => {
 		const { from, to, index1, index2, weight, points, type } = edge;
 		const [weightCurr, setWeightCurr] = useState(weight);
 
@@ -64,7 +64,7 @@ const Edge = React.memo(
 					(connection) => !connection.includes(from) && !connection.includes(to)
 				);
 			});
-			generateEdges(nodesCopy, type);
+			generateEdges(nodesCopy, type, setEdges);
 			setNodes([...nodesCopy]);
 		}
 

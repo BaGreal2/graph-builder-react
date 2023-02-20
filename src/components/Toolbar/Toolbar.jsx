@@ -186,9 +186,9 @@ function Toolbar({
 			<div className={styles.save}>
 				<UploadBtn
 					setNodes={setNodes}
+					setEdges={setEdges}
 					setType={setType}
 					setConnectClicks={setConnectClicks}
-					generateEdges={generateEdges}
 					active={true}
 				>
 					<UploadIcon />
