@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './UploadBtn.module.css';
 
 function UploadBtn({
@@ -18,6 +17,7 @@ function UploadBtn({
 			reader.readAsText(file);
 		}
 	}
+	// updating states to loaded file
 	function onReaderLoad(e) {
 		let graphArr = JSON.parse(e.target.result).nodes;
 		let savedType = JSON.parse(e.target.result).type;

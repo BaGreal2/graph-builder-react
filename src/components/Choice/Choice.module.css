@@ -23,6 +23,7 @@
 	border-radius: 2px;
 	cursor: pointer;
 	transition: all 0.3s linear;
+	font-family: Arial, Helvetica, sans-serif;
 }
 .choice:hover {
 	border-radius: 6px;

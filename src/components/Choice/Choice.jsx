@@ -1,5 +1,3 @@
-import React from 'react';
-
 import styles from './Choice.module.css';
 
 function Choice({ setType, setShowChoice, onConnect }) {

@@ -1,14 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
-import ArrowDownIcon from '../../assets/icons/ArrowDownIcon';
-import ArrowUpIcon from '../../assets/icons/ArrowUpIcon';
-import ConnectionsIcon from '../../assets/icons/ConnectionsIcon';
-import FillIcon from '../../assets/icons/FillIcon';
-import HashIcon from '../../assets/icons/HashIcon';
-import PointerIcon from '../../assets/icons/PointerIcon';
-import SaveIcon from '../../assets/icons/SaveIcon';
-import TrashIcon from '../../assets/icons/TrashIcon';
-import UploadIcon from '../../assets/icons/UploadIcon';
+import {
+	ArrowDownIcon,
+	ArrowUpIcon,
+	ConnectionsIcon,
+	FillIcon,
+	HashIcon,
+	PointerIcon,
+	SaveIcon,
+	TrashIcon,
+	UploadIcon,
+} from '../../assets/icons';
+import { generateEdges, getConnectorPoints } from '../../helpers';
 import Choice from '../Choice';
 import styles from './Toolbar.module.css';
 import ToolBtn from './ToolBtn';
@@ -31,9 +34,9 @@ function Toolbar({
 	setScaleMode,
 	colorMode,
 	setColorMode,
-	getConnectorPoints,
+	selectedColor,
+	setSelectedColor,
 	connectionActive,
-	generateEdges,
 	type,
 	setType,
 }) {
@@ -41,7 +44,9 @@ function Toolbar({
 	const [showChoice, setShowChoice] = useState(false);
 	const [connectClicks, setConnectClicks] = useState(0);
 
+	// connecting selected edges
 	function onConnect(type) {
+		// showing modal dialog only once
 		setConnectClicks((prev) => prev + 1);
 		if (connectClicks === 0) {
 			setShowChoice(true);
@@ -135,8 +140,6 @@ function Toolbar({
 		setDownloadUrl(URL.createObjectURL(blob));
 	}
 
-	useEffect(() => {}, [downloadUrl, showChoice, connectClicks]);
-
 	return (
 		<div className={styles.toolbar}>
 			<div className={styles.toolsWrapper}>
@@ -166,7 +169,10 @@ function Toolbar({
 				<ToolBtn onClick={onColorMode} active={true} pressed={colorMode}>
 					<FillIcon />
 				</ToolBtn>
-				<ToolBtn onClick={() => onConnect(type)} active={connectionActive}>
+				<ToolBtn
+					onClick={() => connectionActive && onConnect(type)}
+					active={connectionActive}
+				>
 					<ConnectionsIcon />
 					{showChoice && (
 						<Choice
@@ -194,7 +200,14 @@ function Toolbar({
 					</ToolBtn>
 				</a>
 			</div>
-			<input className={styles.colorInput} type="color" value="#2a507e" />
+			{colorMode && (
+				<input
+					className={styles.colorInput}
+					type="color"
+					onChange={(e) => setSelectedColor(e.target.value)}
+					value={selectedColor}
+				/>
+			)}
 		</div>
 	);
 }

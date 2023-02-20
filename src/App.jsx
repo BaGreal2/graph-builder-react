@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Layer, Stage } from 'react-konva';
 import { v4 as uuid } from 'uuid';
 import Edge from './components/Edge';
@@ -6,6 +6,7 @@ import Node from './components/Node';
 import Toolbar from './components/Toolbar';
 
 function App() {
+	// setting main variables
 	const [nodes, setNodes] = useState([]);
 	const [edges, setEdges] = useState([]);
 	const [nodesSelected, setNodesSelected] = useState([]);
@@ -15,9 +16,12 @@ function App() {
 	const [weightMode, setWeightMode] = useState(false);
 	const [deleteMode, setDeleteMode] = useState(false);
 	const [colorMode, setColorMode] = useState(false);
+	const [selectedColor, setSelectedColor] = useState('#2a507e');
 	const [type, setType] = useState('');
 
+	// creating node on field click
 	function onCreateNode(e) {
+		// checkng if node exist on click spot or other mods enabled
 		if (
 			nodes.some((node) => {
 				return (
@@ -36,58 +40,18 @@ function App() {
 		setNodes((prev) => [
 			...prev,
 			{
-				_id: _id,
+				_id,
 				index: counter,
 				x: e.layerX,
 				y: e.layerY,
 				radius: 20,
+				color: '#2a507e',
 				selected: false,
 				connections: [],
 			},
 		]);
 		setCounter((prev) => prev + 1);
 	}
-
-	function generateEdges(nodesArr, type) {
-		const newEdges = [];
-		nodesArr.map((node) => {
-			node.connections.map((connection) => {
-				let _id = uuid();
-				const node1 = node;
-				const node2 = nodesArr.find((node) => node.index - 1 === connection[0]);
-
-				const newEdge = {
-					_id: _id,
-					from: node1.index,
-					to: node2.index,
-					index1: node1.connections.length,
-					index2: node2.connections.length,
-					weight: connection[1],
-					points: getConnectorPoints(node1, node2),
-					type: type,
-				};
-				newEdges.push(newEdge);
-			});
-		});
-		setEdges(newEdges);
-	}
-
-	function getConnectorPoints(from, to) {
-		const dx = to.x - from.x;
-		const dy = to.y - from.y;
-		const radiusFrom = from.radius;
-		const radiusTo = to.radius;
-		const angle = Math.atan2(-dy, dx);
-
-		return [
-			from.x + -radiusFrom * Math.cos(angle + Math.PI),
-			from.y + radiusFrom * Math.sin(angle + Math.PI),
-			to.x + -radiusTo * Math.cos(angle),
-			to.y + radiusTo * Math.sin(angle),
-		];
-	}
-
-	useEffect(() => {}, [nodes, counter, edges]);
 
 	return (
 		<div className="app">
@@ -108,9 +72,9 @@ function App() {
 				setScaleMode={setScaleMode}
 				colorMode={colorMode}
 				setColorMode={setColorMode}
-				getConnectorPoints={getConnectorPoints}
+				selectedColor={selectedColor}
+				setSelectedColor={setSelectedColor}
 				connectionActive={nodes.filter((node) => node.selected).length > 1}
-				generateEdges={generateEdges}
 				type={type}
 				setType={setType}
 			/>
@@ -125,19 +89,12 @@ function App() {
 						return (
 							<Edge
 								key={edge._id}
+								edge={edge}
 								fill="white"
 								weightMode={weightMode}
 								deleteMode={deleteMode}
 								nodes={nodes}
 								setNodes={setNodes}
-								from={edge.from}
-								to={edge.to}
-								index1={edge.index1}
-								index2={edge.index2}
-								weight={edge.weight}
-								points={edge.points}
-								type={edge.type}
-								generateEdges={generateEdges}
 							/>
 						);
 					})}
@@ -145,20 +102,17 @@ function App() {
 						return (
 							<Node
 								key={node._id}
-								x={node.x}
-								y={node.y}
-								radius={node.radius}
-								index={node.index}
-								selected={node.selected}
+								node={node}
 								nodesSelected={nodesSelected}
 								setNodesSelected={setNodesSelected}
 								nodes={nodes}
 								setNodes={setNodes}
 								edges={edges}
 								setEdges={setEdges}
-								getConnectorPoints={getConnectorPoints}
 								scaleMode={scaleMode}
 								deleteMode={deleteMode}
+								colorMode={colorMode}
+								selectedColor={selectedColor}
 							/>
 						);
 					})}

@@ -1,42 +1,40 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 const { Command } = require('commander');
 
 const program = new Command();
+program.version('1.0.0');
 
-program.option('-p, --pathTo <type>', 'Components path', 'assets/icons');
-
-program.parse(process.argv);
+program
+	.option('-p, --path <path>', 'Path to the folder', '.')
+	.parse(process.argv);
 
 const options = program.opts();
 
-const componentsPath = (pathTo) => path.join(__dirname, `src/${pathTo}`);
+const folderPath = path.join(__dirname, 'src/' + options.path);
+console.log(folderPath);
 
-async function createComponent({ pathTo }) {
-	const folderPath = componentsPath(pathTo);
-	fs.readdir(folderPath, (err, files) => {
-		files.forEach(async (file) => {
-			console.log(file);
-			await fs.writeFile(
-				path.join(folderPath, `index.js`),
-				`export { default as ${file} } from './${file}';\n`
-			);
-		});
-	});
-	// .forEach((file) => {
-	// 	console.log(file);
-	// 	// await fs.writeFile(
-	// 	// 	path.join(folderPath, `index.js`),
-	// 	// 	`export { default } from './${name}';\n`
-	// 	// );
-	// });
-}
-
-createComponent(options)
-	.then(() => {
-		process.exit(0);
-	})
-	.catch((error) => {
-		console.log(error);
+fs.readdir(folderPath, (err, files) => {
+	if (err) {
+		console.error(err);
 		process.exit(1);
+	}
+
+	const fileNames = files.filter((file) => {
+		const filePath = path.join(folderPath, file);
+		return fs.statSync(filePath).isFile();
 	});
+
+	let writeStr = '';
+
+	fileNames.forEach((fileName) => {
+		writeStr += `export {default as ${fileName.substring(
+			0,
+			fileName.length - 4
+		)}} from './${fileName.substring(0, fileName.length - 4)}';`;
+	});
+
+	fs.writeFileSync(path.join(folderPath, 'index.js'), writeStr);
+
+	console.log(writeStr);
+});

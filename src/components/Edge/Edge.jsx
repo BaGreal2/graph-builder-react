@@ -1,25 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Arrow, Group, Line, Text } from 'react-konva';
+import { generateEdges } from '../../helpers';
 
 const Edge = React.memo(
-	({
-		fill,
-		weightMode,
-		deleteMode,
-		nodes,
-		setNodes,
-		from,
-		to,
-		index1,
-		index2,
-		weight,
-		points,
-		type,
-		generateEdges,
-	}) => {
+	({ edge, fill, weightMode, deleteMode, nodes, setNodes }) => {
+		const { from, to, index1, index2, weight, points, type } = edge;
 		const [weightCurr, setWeightCurr] = useState(weight);
 
-		const addWeight = useCallback(() => {
+		function addWeight() {
 			if (!weightMode) {
 				return;
 			}
@@ -64,9 +52,9 @@ const Edge = React.memo(
 			}
 			setWeightCurr(userWeight);
 			setNodes([...nodesCopy]);
-		}, [weightMode, nodes, from, to, index1, index2, setNodes]);
+		}
 
-		const onDelete = useCallback(() => {
+		function onDelete() {
 			if (!deleteMode) {
 				return;
 			}
@@ -78,14 +66,12 @@ const Edge = React.memo(
 			});
 			generateEdges(nodesCopy, type);
 			setNodes([...nodesCopy]);
-		}, [deleteMode, nodes, from, to, generateEdges, setNodes]);
+		}
 
-		const onClick = useCallback(() => {
+		function onClick() {
 			addWeight();
 			onDelete();
-		}, [addWeight, onDelete]);
-
-		useEffect(() => {}, [weight]);
+		}
 
 		return (
 			<Group
