@@ -145,6 +145,19 @@ const Node = React.memo(
 			onSelect();
 		}
 
+		function dragBoundFunc(pos) {
+			const stageWidth = window.innerWidth - 50;
+			const stageHeight = window.innerHeight;
+
+			const maxX = stageWidth - radius;
+			const maxY = stageHeight - radius;
+
+			const x = Math.max(radius, Math.min(pos.x + radius, maxX));
+			const y = Math.max(radius, Math.min(pos.y + radius, maxY));
+
+			return { x, y };
+		}
+
 		return (
 			<Group
 				x={x}
@@ -152,6 +165,7 @@ const Node = React.memo(
 				width={radius * 2}
 				height={radius * 2}
 				draggable
+				dragBoundFunc={dragBoundFunc}
 				onDragMove={(e) => onDragMove(e)}
 				onMouseEnter={() => (document.body.style.cursor = 'grab')}
 				onDragEnd={() => (document.body.style.cursor = 'grab')}

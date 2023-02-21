@@ -4,7 +4,7 @@ export default function getConnectorPoints(
 	isMulti = false,
 	second = false
 ) {
-	const delta = second ? 5 : -5;
+	const delta = second ? 7 : -7;
 	const fromX = isMulti ? from.x - delta : from.x;
 	const fromY = isMulti ? from.y - delta : from.y;
 	const toX = isMulti ? to.x - delta : to.x;

@@ -11,7 +11,7 @@ import {
 	TrashIcon,
 	UploadIcon,
 } from '../../assets/icons';
-import { generateEdges, getConnectorPoints } from '../../helpers';
+import { getConnectorPoints } from '../../helpers';
 import Choice from '../Choice';
 import styles from './Toolbar.module.css';
 import ToolBtn from './ToolBtn';
@@ -231,12 +231,20 @@ function Toolbar({
 				</a>
 			</div>
 			{colorMode && (
-				<input
-					className={styles.colorInput}
-					type="color"
-					onChange={(e) => setSelectedColor(e.target.value)}
-					value={selectedColor}
-				/>
+				<div className={styles.colorInputWrapper}>
+					<input
+						className={styles.colorInput}
+						type="color"
+						onChange={(e) => setSelectedColor(e.target.value)}
+						value={selectedColor}
+					/>
+					<button
+						className={styles.defaultColor}
+						onClick={() => setSelectedColor('#2a507e')}
+					>
+						Set Default
+					</button>
+				</div>
 			)}
 		</div>
 	);
