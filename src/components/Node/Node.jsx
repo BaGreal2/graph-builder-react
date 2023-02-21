@@ -101,10 +101,19 @@ const Node = React.memo(
 			});
 
 			edgesCopy.map((edge) => {
-				edge.points = getConnectorPoints(
-					nodesCopy.find((node) => node.index === edge.from),
-					nodesCopy.find((node) => node.index === edge.to)
-				);
+				if (edge.isMulti) {
+					edge.points = getConnectorPoints(
+						nodesCopy.find((node) => node.index === edge.from),
+						nodesCopy.find((node) => node.index === edge.to),
+						edge.isMulti,
+						edge.second
+					);
+				} else {
+					edge.points = getConnectorPoints(
+						nodesCopy.find((node) => node.index === edge.from),
+						nodesCopy.find((node) => node.index === edge.to)
+					);
+				}
 			});
 			setNodes([...nodesCopy]);
 			setEdges([...edgesCopy]);

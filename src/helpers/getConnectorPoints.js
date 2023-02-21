@@ -1,14 +1,24 @@
-export default function getConnectorPoints(from, to) {
-	const dx = to.x - from.x;
-	const dy = to.y - from.y;
+export default function getConnectorPoints(
+	from,
+	to,
+	isMulti = false,
+	second = false
+) {
+	const delta = second ? 5 : -5;
+	const fromX = isMulti ? from.x - delta : from.x;
+	const fromY = isMulti ? from.y - delta : from.y;
+	const toX = isMulti ? to.x - delta : to.x;
+	const toY = isMulti ? to.y - delta : to.y;
+	const dx = toX - fromX;
+	const dy = toY - fromY;
 	const radiusFrom = from.radius;
 	const radiusTo = to.radius;
 	const angle = Math.atan2(-dy, dx);
 
 	return [
-		from.x + -radiusFrom * Math.cos(angle + Math.PI),
-		from.y + radiusFrom * Math.sin(angle + Math.PI),
-		to.x + -radiusTo * Math.cos(angle),
-		to.y + radiusTo * Math.sin(angle),
+		fromX + -radiusFrom * Math.cos(angle + Math.PI),
+		fromY + radiusFrom * Math.sin(angle + Math.PI),
+		toX + -radiusTo * Math.cos(angle),
+		toY + radiusTo * Math.sin(angle),
 	];
 }

@@ -57,6 +57,7 @@ function App() {
 		<div className="app">
 			<Toolbar
 				nodes={nodes}
+				edges={edges}
 				nodesSelected={nodesSelected}
 				setNodesSelected={setNodesSelected}
 				setNodes={setNodes}
@@ -74,6 +75,7 @@ function App() {
 				setColorMode={setColorMode}
 				selectedColor={selectedColor}
 				setSelectedColor={setSelectedColor}
+				setCounter={setCounter}
 				connectionActive={nodes.filter((node) => node.selected).length > 1}
 				type={type}
 				setType={setType}

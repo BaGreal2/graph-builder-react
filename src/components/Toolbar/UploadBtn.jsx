@@ -5,6 +5,7 @@ function UploadBtn({
 	setNodes,
 	setEdges,
 	setType,
+	setCounter,
 	setConnectClicks,
 	active,
 	children,
@@ -24,6 +25,7 @@ function UploadBtn({
 		let savedType = JSON.parse(e.target.result).type;
 		setNodes(graphArr);
 		setType(savedType);
+		setCounter(graphArr.length + 1);
 		setConnectClicks((prev) => prev + 1);
 		generateEdges(graphArr, savedType, setEdges);
 	}

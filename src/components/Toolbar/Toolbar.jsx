@@ -19,6 +19,7 @@ import UploadBtn from './UploadBtn';
 
 function Toolbar({
 	nodes,
+	edges,
 	nodesSelected,
 	setNodesSelected,
 	setNodes,
@@ -36,6 +37,7 @@ function Toolbar({
 	setColorMode,
 	selectedColor,
 	setSelectedColor,
+	setCounter,
 	connectionActive,
 	type,
 	setType,
@@ -58,10 +60,33 @@ function Toolbar({
 		}
 
 		const nodesCopy = [...nodes];
+		const edgesCopy = [...edges];
 		for (let i = 0; i < nodesSelected.length - 1; i++) {
 			const node1 = nodesSelected[i];
 			const node2 = nodesSelected[i + 1];
 			const _id = uuid();
+			if (
+				node2.connections.some((connection) => {
+					return connection.includes(node1.index - 1);
+				}) &&
+				node1.connections.some((connection) => {
+					return connection.includes(node2.index - 1);
+				})
+			) {
+				continue;
+			}
+			let isMulti = node2.connections.some((connection) => {
+				if (connection.includes(node1.index - 1)) {
+					edgesCopy.forEach((edge) => {
+						if (edge.from === node2.index) {
+							edge.points = getConnectorPoints(node2, node1, true, true);
+							edge.isMulti = true;
+							edge.second = true;
+						}
+					});
+					return true;
+				}
+			});
 			const newEdge = {
 				_id,
 				from: node1.index,
@@ -69,8 +94,10 @@ function Toolbar({
 				index1: node1.connections.length + 1,
 				index2: node2.connections.length + 1,
 				weight: '',
-				points: getConnectorPoints(node1, node2),
+				points: getConnectorPoints(node1, node2, isMulti),
 				type: type,
+				isMulti: isMulti,
+				second: false,
 			};
 			nodesCopy.find((node, idx) => {
 				if (node.index === node1.index) {
@@ -86,10 +113,12 @@ function Toolbar({
 					}
 				});
 			}
-			setEdges((prev) => [...prev, newEdge]);
+			edgesCopy.push(newEdge);
+			// setEdges((prev) => [...prev, newEdge]);
 		}
 		nodesCopy.map((node) => (node.selected = false));
 		setNodesSelected([]);
+		setEdges([...edgesCopy]);
 		setNodes([...nodesCopy]);
 	}
 
@@ -188,6 +217,7 @@ function Toolbar({
 					setNodes={setNodes}
 					setEdges={setEdges}
 					setType={setType}
+					setCounter={setCounter}
 					setConnectClicks={setConnectClicks}
 					active={true}
 				>
