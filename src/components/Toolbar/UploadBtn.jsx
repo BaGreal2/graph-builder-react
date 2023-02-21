@@ -1,9 +1,12 @@
-import React from 'react';
+import { generateEdges } from '../../helpers';
 import styles from './UploadBtn.module.css';
 
 function UploadBtn({
 	setNodes,
-	generateEdges,
+	setEdges,
+	setType,
+	setCounter,
+	setConnectClicks,
 	active,
 	children,
 	pressed = false,
@@ -16,10 +19,15 @@ function UploadBtn({
 			reader.readAsText(file);
 		}
 	}
+	// updating states to loaded file
 	function onReaderLoad(e) {
-		let graphArr = JSON.parse(e.target.result);
+		let graphArr = JSON.parse(e.target.result).nodes;
+		let savedType = JSON.parse(e.target.result).type;
 		setNodes(graphArr);
-		generateEdges(graphArr);
+		setType(savedType);
+		setCounter(graphArr.length + 1);
+		setConnectClicks((prev) => prev + 1);
+		generateEdges(graphArr, savedType, setEdges);
 	}
 	return (
 		<div className={styles.toolContainer}>
