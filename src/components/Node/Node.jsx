@@ -152,8 +152,8 @@ const Node = React.memo(
 			const maxX = stageWidth - radius;
 			const maxY = stageHeight - radius;
 
-			const x = Math.max(radius, Math.min(pos.x + radius, maxX));
-			const y = Math.max(radius, Math.min(pos.y + radius, maxY));
+			const x = Math.max(radius, Math.min(pos.x, maxX));
+			const y = Math.max(radius, Math.min(pos.y, maxY));
 
 			return { x, y };
 		}
