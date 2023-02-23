@@ -13,7 +13,6 @@ function App() {
 	const [selectMode, setSelectMode] = useState(true);
 	const [weightMode, setWeightMode] = useState(false);
 	const [deleteMode, setDeleteMode] = useState(false);
-	const [colorMode, setColorMode] = useState(false);
 	const [nodesColor, setNodesColor] = useState('#2a507e');
 	const [edgesColor, setEdgesColor] = useState('#ffffff');
 	const [type, setType] = useState('');
@@ -66,8 +65,6 @@ function App() {
 				scaleModeUp={scaleMode === 'up'}
 				scaleModeDown={scaleMode === 'down'}
 				setScaleMode={setScaleMode}
-				colorMode={colorMode}
-				setColorMode={setColorMode}
 				nodesColor={nodesColor}
 				setNodesColor={setNodesColor}
 				edgesColor={edgesColor}
@@ -90,7 +87,6 @@ function App() {
 								edge={edge}
 								weightMode={weightMode}
 								deleteMode={deleteMode}
-								colorMode={colorMode}
 								edgesColor={edgesColor}
 								nodes={nodes}
 								setNodes={setNodes}
@@ -112,7 +108,6 @@ function App() {
 								setEdges={setEdges}
 								scaleMode={scaleMode}
 								deleteMode={deleteMode}
-								colorMode={colorMode}
 								nodesColor={nodesColor}
 								type={type}
 							/>

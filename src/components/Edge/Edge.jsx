@@ -3,16 +3,7 @@ import { Arrow, Group, Line, Text } from 'react-konva';
 import { generateEdges } from '../../helpers';
 
 const Edge = React.memo(
-	({
-		edge,
-		weightMode,
-		deleteMode,
-		colorMode,
-		edgesColor,
-		nodes,
-		setNodes,
-		setEdges,
-	}) => {
+	({ edge, weightMode, deleteMode, edgesColor, nodes, setNodes, setEdges }) => {
 		const { from, to, index1, index2, weight, points, type } = edge;
 		const [weightCurr, setWeightCurr] = useState(weight);
 		const weightColorDiff = 0xffffff - 0xc28547;
@@ -79,31 +70,9 @@ const Edge = React.memo(
 			setNodes([...nodesCopy]);
 		}
 
-		function onChangeColor() {
-			if (!colorMode) {
-				return;
-			}
-			const nodesCopy = [...nodes];
-			nodesCopy.find((node) => {
-				if (node.index === from) {
-					node.connections[index1 - 1][2] = selectedColor;
-				}
-			});
-			if (type === 'undirect') {
-				nodesCopy.find((node) => {
-					if (node.index === to) {
-						node.connections[index2 - 1][2] = selectedColor;
-					}
-				});
-			}
-			generateEdges(nodesCopy, type, setEdges);
-			setNodes([...nodesCopy]);
-		}
-
 		function onClick() {
 			addWeight();
 			onDelete();
-			onChangeColor();
 		}
 
 		return (
@@ -112,7 +81,7 @@ const Edge = React.memo(
 				height={Math.abs(points[0] - points[2])}
 				onMouseEnter={() =>
 					(document.body.style.cursor =
-						weightMode || deleteMode || colorMode ? 'pointer' : 'default')
+						weightMode || deleteMode ? 'pointer' : 'default')
 				}
 				onMouseLeave={() => (document.body.style.cursor = 'default')}
 				onClick={() => onClick()}
@@ -121,7 +90,7 @@ const Edge = React.memo(
 					<Line
 						fill={edgesColor}
 						stroke={edgesColor}
-						strokeWidth={weightMode || deleteMode || colorMode ? 5 : 2}
+						strokeWidth={weightMode || deleteMode ? 5 : 2}
 						hitStrokeWidth={35}
 						points={points}
 					/>
@@ -131,7 +100,7 @@ const Edge = React.memo(
 					<Arrow
 						fill={edgesColor}
 						stroke={edgesColor}
-						strokeWidth={weightMode || deleteMode || colorMode ? 5 : 2}
+						strokeWidth={weightMode || deleteMode ? 5 : 2}
 						hitStrokeWidth={35}
 						points={points}
 					/>
