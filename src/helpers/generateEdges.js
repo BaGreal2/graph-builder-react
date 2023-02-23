@@ -36,6 +36,7 @@ export default function generateEdges(nodesArr, type, setEdges) {
 				weight: connection[1],
 				points: getConnectorPoints(node1, node2, isMulti),
 				type: type,
+				color: connection[2],
 				isMulti: isMulti,
 				second: false,
 			};
