@@ -8,12 +8,12 @@ const Edge = React.memo(
 		weightMode,
 		deleteMode,
 		colorMode,
-		selectedColor,
+		edgesColor,
 		nodes,
 		setNodes,
 		setEdges,
 	}) => {
-		const { from, to, index1, index2, weight, points, type, color } = edge;
+		const { from, to, index1, index2, weight, points, type } = edge;
 		const [weightCurr, setWeightCurr] = useState(weight);
 		const weightColorDiff = 0xffffff - 0xc28547;
 
@@ -119,8 +119,8 @@ const Edge = React.memo(
 			>
 				{type === 'undirect' && (
 					<Line
-						fill={color}
-						stroke={color}
+						fill={edgesColor}
+						stroke={edgesColor}
 						strokeWidth={weightMode || deleteMode || colorMode ? 5 : 2}
 						hitStrokeWidth={35}
 						points={points}
@@ -129,8 +129,8 @@ const Edge = React.memo(
 
 				{type === 'direct' && (
 					<Arrow
-						fill={color}
-						stroke={color}
+						fill={edgesColor}
+						stroke={edgesColor}
 						strokeWidth={weightMode || deleteMode || colorMode ? 5 : 2}
 						hitStrokeWidth={35}
 						points={points}
@@ -145,7 +145,7 @@ const Edge = React.memo(
 						fill={(
 							'#' +
 							Math.abs(
-								parseInt(color.substring(1), 16) - weightColorDiff
+								parseInt(edgesColor.substring(1), 16) - weightColorDiff
 							).toString(16)
 						).substring(0, 7)}
 						text={weightCurr}

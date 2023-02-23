@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import {
 	ArrowDownIcon,
 	ArrowUpIcon,
@@ -11,7 +10,7 @@ import {
 	TrashIcon,
 	UploadIcon,
 } from '../../assets/icons';
-import { getConnectorPoints } from '../../helpers';
+import { generateEdges, getConnectorPoints } from '../../helpers';
 import Choice from '../Choice';
 import styles from './Toolbar.module.css';
 import ToolBtn from './ToolBtn';
@@ -19,7 +18,6 @@ import UploadBtn from './UploadBtn';
 
 function Toolbar({
 	nodes,
-	edges,
 	nodesSelected,
 	setNodesSelected,
 	setNodes,
@@ -35,9 +33,10 @@ function Toolbar({
 	setScaleMode,
 	colorMode,
 	setColorMode,
-	selectedColor,
-	setSelectedColor,
-	setCounter,
+	nodesColor,
+	setNodesColor,
+	edgesColor,
+	setEdgesColor,
 	connectionActive,
 	type,
 	setType,
@@ -60,70 +59,40 @@ function Toolbar({
 		}
 
 		const nodesCopy = [...nodes];
-		const edgesCopy = [...edges];
+
 		for (let i = 0; i < nodesSelected.length - 1; i++) {
 			const node1 = nodesSelected[i];
 			const node2 = nodesSelected[i + 1];
-			const _id = uuid();
 			if (
 				node2.connections.some((connection) => {
-					return connection.includes(node1.index - 1);
+					return connection[0] === node1.index;
 				}) &&
 				node1.connections.some((connection) => {
-					return connection.includes(node2.index - 1);
+					return connection[0] === node2.index;
 				})
 			) {
 				continue;
 			}
 
-			let isMulti = node2.connections.some((connection) => {
-				if (connection.includes(node1.index - 1)) {
-					edgesCopy.forEach((edge) => {
-						if (edge.from === node2.index) {
-							edge.points = getConnectorPoints(node2, node1, true, true);
-							edge.isMulti = true;
-							edge.second = true;
-						}
-					});
-					return true;
-				}
-			});
-
-			const newEdge = {
-				_id,
-				from: node1.index,
-				to: node2.index,
-				index1: node1.connections.length + 1,
-				index2: node2.connections.length + 1,
-				weight: '',
-				points: getConnectorPoints(node1, node2, isMulti),
-				type: type,
-				isMulti: isMulti,
-				second: false,
-				color: '#FFFFFF',
-			};
-
 			nodesCopy.find((node, idx) => {
 				if (node.index === node1.index) {
-					nodesCopy[idx].connections.push([node2.index - 1, '', '#FFFFFF']);
+					nodesCopy[idx].connections.push([node2.index, '']);
 					return true;
 				}
 			});
 			if (type === 'undirect') {
 				nodesCopy.find((node, idx) => {
 					if (node.index === node2.index) {
-						nodesCopy[idx].connections.push([node1.index - 1, '', '#FFFFFF']);
+						nodesCopy[idx].connections.push([node1.index, '']);
 						return true;
 					}
 				});
 			}
-
-			edgesCopy.push(newEdge);
-			// setEdges((prev) => [...prev, newEdge]);
 		}
-		nodesCopy.map((node) => (node.selected = false));
+
+		nodesCopy.forEach((node) => (node.selected = false));
 		setNodesSelected([]);
-		setEdges([...edgesCopy]);
+		generateEdges(nodesCopy, type, setEdges);
 		setNodes([...nodesCopy]);
 	}
 
@@ -166,8 +135,10 @@ function Toolbar({
 
 	function onSaveGraph() {
 		const saveObj = {
-			type: type,
-			nodes: nodes,
+			type,
+			nodesColor,
+			edgesColor,
+			nodes,
 		};
 		const fileData = JSON.stringify(saveObj);
 		const blob = new Blob([fileData], { type: 'text/plain' });
@@ -221,8 +192,9 @@ function Toolbar({
 				<UploadBtn
 					setNodes={setNodes}
 					setEdges={setEdges}
+					setNodesColor={setNodesColor}
+					setEdgesColor={setEdgesColor}
 					setType={setType}
-					setCounter={setCounter}
 					setConnectClicks={setConnectClicks}
 					active={true}
 				>
@@ -238,14 +210,23 @@ function Toolbar({
 			{colorMode && (
 				<div className={styles.colorInputWrapper}>
 					<input
-						className={styles.colorInput}
+						className={styles.colorNodesInput}
 						type="color"
-						onChange={(e) => setSelectedColor(e.target.value)}
-						value={selectedColor}
+						onChange={(e) => setNodesColor(e.target.value)}
+						value={nodesColor}
+					/>
+					<input
+						className={styles.colorEdgesInput}
+						type="color"
+						onChange={(e) => setEdgesColor(e.target.value)}
+						value={edgesColor}
 					/>
 					<button
 						className={styles.defaultColor}
-						onClick={() => setSelectedColor('#2a507e')}
+						onClick={() => {
+							setNodesColor('#2a507e');
+							setEdgesColor('#ffffff');
+						}}
 					>
 						Set Default
 					</button>

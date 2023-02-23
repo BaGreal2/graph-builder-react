@@ -5,9 +5,10 @@ function UploadBtn({
 	setNodes,
 	setEdges,
 	setType,
-	setCounter,
 	setConnectClicks,
 	active,
+	setNodesColor,
+	setEdgesColor,
 	children,
 	pressed = false,
 }) {
@@ -21,13 +22,14 @@ function UploadBtn({
 	}
 	// updating states to loaded file
 	function onReaderLoad(e) {
-		let graphArr = JSON.parse(e.target.result).nodes;
-		let savedType = JSON.parse(e.target.result).type;
-		setNodes(graphArr);
-		setType(savedType);
-		setCounter(graphArr.length + 1);
+		const res = JSON.parse(e.target.result);
+		const { type, nodesColor, edgesColor, nodes } = res;
+		setNodes([...nodes]);
+		setType(type);
+		setNodesColor(nodesColor);
+		setEdgesColor(edgesColor);
 		setConnectClicks((prev) => prev + 1);
-		generateEdges(graphArr, savedType, setEdges);
+		generateEdges(nodes, type, setEdges);
 	}
 	return (
 		<div className={styles.toolContainer}>
