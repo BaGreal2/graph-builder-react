@@ -1,25 +1,25 @@
 import React from 'react';
 import { Circle, Group, Text } from 'react-konva';
-import { getConnectorPoints } from '../../helpers';
+import { generateEdges, getConnectorPoints } from '../../helpers';
 
 const Node = React.memo(
 	({
+		index,
 		node,
 		nodesSelected,
 		setNodesSelected,
 		nodes,
 		setNodes,
-		edges,
 		setEdges,
 		scaleMode,
 		deleteMode,
-		colorMode,
-		selectedColor,
+		nodesColor,
+		type,
 	}) => {
-		const { x, y, radius, index, selected, color } = node;
 		// normal: #2a507e
-		// yellow: #c28547
+		// selected: #c28547
 		// text: #afcfe4
+		const { x, y, radius, selected } = node;
 		const selectColorDiff = 0x2a507e - 0xc28547;
 		const textColorDiff = 0x2a507e - 0xafcfe4;
 
@@ -27,22 +27,16 @@ const Node = React.memo(
 			const nodesCopy = [...nodes];
 			const nodesSelectedCopy = [...nodesSelected];
 
-			nodesCopy.find((node, idx) => {
-				if (node.index === index) {
-					nodesCopy[idx].selected = !nodesCopy[idx].selected;
+			nodesCopy[index - 1].selected = !nodesCopy[index - 1].selected;
 
-					if (nodesCopy[idx].selected) {
-						nodesSelectedCopy.push(nodesCopy[idx]);
-					} else {
-						nodesSelectedCopy.splice(
-							nodesSelectedCopy.indexOf(nodesCopy[idx]),
-							1
-						);
-					}
-
-					return true;
-				}
-			});
+			if (nodesCopy[index - 1].selected) {
+				nodesSelectedCopy.push(nodesCopy[index - 1]);
+			} else {
+				nodesSelectedCopy.splice(
+					nodesSelectedCopy.indexOf(nodesCopy[index - 1]),
+					1
+				);
+			}
 
 			setNodesSelected([...nodesSelectedCopy]);
 			setNodes([...nodesCopy]);
@@ -67,65 +61,27 @@ const Node = React.memo(
 		}
 
 		function onDelete() {
-			let foundIndex;
-			const nodesCopy = nodes.filter((node) => {
-				if (node.index !== index) {
-					return true;
-				} else {
-					foundIndex = node.index;
-				}
-			});
+			const nodesCopy = [...nodes];
+
+			nodesCopy.splice(index - 1, 1);
 			nodesCopy.forEach((node) => {
 				node.connections = node.connections.filter(
-					(connection) => !connection.includes(foundIndex - 1)
+					(connection) => !connection.includes(index - 1)
 				);
 			});
-			const edgesCopy = edges.filter(
-				(edge) => edge.from !== index && edge.to !== index
-			);
-			setEdges([...edgesCopy]);
+
+			generateEdges(nodesCopy, type, setEdges);
 			setNodes([...nodesCopy]);
 		}
 
 		function onDragMove(e) {
 			document.body.style.cursor = 'grabbing';
 			const nodesCopy = [...nodes];
-			const edgesCopy = [...edges];
 
-			nodesCopy.find((node, idx) => {
-				if (node.index === index) {
-					nodesCopy[idx].x = e.target.attrs.x;
-					nodesCopy[idx].y = e.target.attrs.y;
-					return true;
-				}
-			});
+			nodesCopy[index - 1].x = e.target.attrs.x;
+			nodesCopy[index - 1].y = e.target.attrs.y;
 
-			edgesCopy.map((edge) => {
-				if (edge.isMulti) {
-					edge.points = getConnectorPoints(
-						nodesCopy.find((node) => node.index === edge.from),
-						nodesCopy.find((node) => node.index === edge.to),
-						edge.isMulti,
-						edge.second
-					);
-				} else {
-					edge.points = getConnectorPoints(
-						nodesCopy.find((node) => node.index === edge.from),
-						nodesCopy.find((node) => node.index === edge.to)
-					);
-				}
-			});
-			setNodes([...nodesCopy]);
-			setEdges([...edgesCopy]);
-		}
-
-		function onChangeColor() {
-			const nodesCopy = [...nodes];
-			nodesCopy.filter((node, idx) => {
-				if (node.index === index) {
-					nodesCopy[idx].color = selectedColor;
-				}
-			});
+			generateEdges(nodesCopy, type, setEdges);
 			setNodes([...nodesCopy]);
 		}
 
@@ -136,10 +92,6 @@ const Node = React.memo(
 			}
 			if (deleteMode) {
 				onDelete();
-				return;
-			}
-			if (colorMode) {
-				onChangeColor();
 				return;
 			}
 			onSelect();
@@ -179,10 +131,10 @@ const Node = React.memo(
 							? (
 									'#' +
 									Math.abs(
-										parseInt(color.substring(1), 16) - selectColorDiff
+										parseInt(nodesColor.substring(1), 16) - selectColorDiff
 									).toString(16)
 							  ).substring(0, 7)
-							: color
+							: nodesColor
 					}
 				/>
 				<Text
@@ -192,9 +144,9 @@ const Node = React.memo(
 					fontStyle="bold"
 					fill={(
 						'#' +
-						Math.abs(parseInt(color.substring(1), 16) - textColorDiff).toString(
-							16
-						)
+						Math.abs(
+							parseInt(nodesColor.substring(1), 16) - textColorDiff
+						).toString(16)
 					).substring(0, 7)}
 					text={index}
 				/>

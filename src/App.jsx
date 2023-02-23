@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Layer, Stage } from 'react-konva';
-import { v4 as uuid } from 'uuid';
 import Edge from './components/Edge';
 import Node from './components/Node';
 import Toolbar from './components/Toolbar';
@@ -10,13 +9,13 @@ function App() {
 	const [nodes, setNodes] = useState([]);
 	const [edges, setEdges] = useState([]);
 	const [nodesSelected, setNodesSelected] = useState([]);
-	const [counter, setCounter] = useState(1);
 	const [scaleMode, setScaleMode] = useState('');
 	const [selectMode, setSelectMode] = useState(true);
 	const [weightMode, setWeightMode] = useState(false);
 	const [deleteMode, setDeleteMode] = useState(false);
 	const [colorMode, setColorMode] = useState(false);
-	const [selectedColor, setSelectedColor] = useState('#2a507e');
+	const [nodesColor, setNodesColor] = useState('#2a507e');
+	const [edgesColor, setEdgesColor] = useState('#ffffff');
 	const [type, setType] = useState('');
 
 	// creating node on field click
@@ -36,21 +35,17 @@ function App() {
 		) {
 			return;
 		}
-		let _id = uuid();
 		setNodes((prev) => [
 			...prev,
 			{
-				_id,
-				index: counter,
+				index: nodes.length + 1,
 				x: e.layerX,
 				y: e.layerY,
 				radius: 20,
-				color: '#2a507e',
 				selected: false,
 				connections: [],
 			},
 		]);
-		setCounter((prev) => prev + 1);
 	}
 
 	return (
@@ -73,9 +68,10 @@ function App() {
 				setScaleMode={setScaleMode}
 				colorMode={colorMode}
 				setColorMode={setColorMode}
-				selectedColor={selectedColor}
-				setSelectedColor={setSelectedColor}
-				setCounter={setCounter}
+				nodesColor={nodesColor}
+				setNodesColor={setNodesColor}
+				edgesColor={edgesColor}
+				setEdgesColor={setEdgesColor}
 				connectionActive={nodes.filter((node) => node.selected).length > 1}
 				type={type}
 				setType={setType}
@@ -87,26 +83,26 @@ function App() {
 				onClick={(e) => selectMode && onCreateNode(e.evt)}
 			>
 				<Layer>
-					{edges.map((edge) => {
+					{edges.map((edge, id) => {
 						return (
 							<Edge
-								key={edge._id}
+								key={id}
 								edge={edge}
-								fill="white"
 								weightMode={weightMode}
 								deleteMode={deleteMode}
 								colorMode={colorMode}
-								selectedColor={selectedColor}
+								edgesColor={edgesColor}
 								nodes={nodes}
 								setNodes={setNodes}
 								setEdges={setEdges}
 							/>
 						);
 					})}
-					{nodes.map((node) => {
+					{nodes.map((node, id) => {
 						return (
 							<Node
-								key={node._id}
+								key={id}
+								index={id + 1}
 								node={node}
 								nodesSelected={nodesSelected}
 								setNodesSelected={setNodesSelected}
@@ -117,7 +113,8 @@ function App() {
 								scaleMode={scaleMode}
 								deleteMode={deleteMode}
 								colorMode={colorMode}
-								selectedColor={selectedColor}
+								nodesColor={nodesColor}
+								type={type}
 							/>
 						);
 					})}

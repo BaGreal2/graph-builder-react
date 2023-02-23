@@ -1,14 +1,8 @@
-export default function getConnectorPoints(
-	from,
-	to,
-	isMulti = false,
-	second = false
-) {
-	const delta = second ? 7 : -7;
-	const fromX = isMulti ? from.x - delta : from.x;
-	const fromY = isMulti ? from.y - delta : from.y;
-	const toX = isMulti ? to.x - delta : to.x;
-	const toY = isMulti ? to.y - delta : to.y;
+export default function getConnectorPoints(from, to) {
+	const fromX = from.x;
+	const fromY = from.y;
+	const toX = to.x;
+	const toY = to.y;
 	const dx = toX - fromX;
 	const dy = toY - fromY;
 	const radiusFrom = from.radius;
