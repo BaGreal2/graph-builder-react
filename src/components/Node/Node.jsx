@@ -178,9 +178,9 @@ const Node = React.memo(
 						selected
 							? (
 									'#' +
-									(parseInt(color.substring(1), 16) - selectColorDiff).toString(
-										16
-									)
+									Math.abs(
+										parseInt(color.substring(1), 16) - selectColorDiff
+									).toString(16)
 							  ).substring(0, 7)
 							: color
 					}
@@ -192,7 +192,9 @@ const Node = React.memo(
 					fontStyle="bold"
 					fill={(
 						'#' +
-						(parseInt(color.substring(1), 16) - textColorDiff).toString(16)
+						Math.abs(parseInt(color.substring(1), 16) - textColorDiff).toString(
+							16
+						)
 					).substring(0, 7)}
 					text={index}
 				/>

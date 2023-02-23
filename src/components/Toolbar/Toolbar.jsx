@@ -75,6 +75,7 @@ function Toolbar({
 			) {
 				continue;
 			}
+
 			let isMulti = node2.connections.some((connection) => {
 				if (connection.includes(node1.index - 1)) {
 					edgesCopy.forEach((edge) => {
@@ -87,6 +88,7 @@ function Toolbar({
 					return true;
 				}
 			});
+
 			const newEdge = {
 				_id,
 				from: node1.index,
@@ -98,21 +100,24 @@ function Toolbar({
 				type: type,
 				isMulti: isMulti,
 				second: false,
+				color: '#FFFFFF',
 			};
+
 			nodesCopy.find((node, idx) => {
 				if (node.index === node1.index) {
-					nodesCopy[idx].connections.push([node2.index - 1]);
+					nodesCopy[idx].connections.push([node2.index - 1, '', '#FFFFFF']);
 					return true;
 				}
 			});
 			if (type === 'undirect') {
 				nodesCopy.find((node, idx) => {
 					if (node.index === node2.index) {
-						nodesCopy[idx].connections.push([node1.index - 1]);
+						nodesCopy[idx].connections.push([node1.index - 1, '', '#FFFFFF']);
 						return true;
 					}
 				});
 			}
+
 			edgesCopy.push(newEdge);
 			// setEdges((prev) => [...prev, newEdge]);
 		}

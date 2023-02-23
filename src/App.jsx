@@ -95,6 +95,8 @@ function App() {
 								fill="white"
 								weightMode={weightMode}
 								deleteMode={deleteMode}
+								colorMode={colorMode}
+								selectedColor={selectedColor}
 								nodes={nodes}
 								setNodes={setNodes}
 								setEdges={setEdges}
