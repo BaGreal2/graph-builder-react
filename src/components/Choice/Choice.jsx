@@ -11,6 +11,9 @@ function Choice({ choices, upper = false }) {
 						key={idx}
 						className={styles.choice}
 						onClick={() => choice.func()}
+						data-tooltip-content={choice.tooltip}
+						data-tooltip-id="my-tooltip"
+						data-tooltip-place="right"
 					>
 						{choice.text}
 					</div>

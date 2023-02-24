@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Layer, Stage } from 'react-konva';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 import Edge from './components/Edge';
 import Node from './components/Node';
 import Toolbar from './components/Toolbar';
@@ -118,6 +120,7 @@ function App() {
 					})}
 				</Layer>
 			</Stage>
+			<Tooltip id="my-tooltip" className="tooltip" />
 		</div>
 	);
 }

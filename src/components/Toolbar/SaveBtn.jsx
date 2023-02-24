@@ -1,9 +1,9 @@
 import { SaveIcon } from '../../assets/icons';
 import ToolBtn from './ToolBtn';
 
-function SaveBtn({ onShowChoice, children }) {
+function SaveBtn({ tooltipText, onShowChoice, children }) {
 	return (
-		<ToolBtn onClick={onShowChoice} active={true}>
+		<ToolBtn tooltipText={tooltipText} onClick={onShowChoice} active={true}>
 			<SaveIcon />
 			{children}
 		</ToolBtn>

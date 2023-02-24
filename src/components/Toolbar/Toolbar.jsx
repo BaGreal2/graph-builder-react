@@ -7,9 +7,7 @@ import {
 	FillIcon,
 	HashIcon,
 	PointerIcon,
-	SaveIcon,
 	TrashIcon,
-	UploadIcon,
 } from '../../assets/icons';
 import { generateEdges } from '../../helpers';
 import Choice from '../Choice';
@@ -145,7 +143,11 @@ function Toolbar({
 
 	function onSaveGraphTXT() {
 		const saveNodesArr = nodes.map((node) => node.connections);
-		const fileData = JSON.stringify(saveNodesArr);
+		const saveObj = {
+			type,
+			nodes: saveNodesArr,
+		};
+		const fileData = JSON.stringify(saveObj);
 		let userFileName = prompt('Enter filename:');
 		if (!userFileName) {
 			userFileName = 'graph';
@@ -168,14 +170,25 @@ function Toolbar({
 	return (
 		<div className={styles.toolbar}>
 			<div className={styles.toolsWrapper}>
-				<ToolBtn onClick={onSelectMode} active={true} pressed={selectMode}>
+				<ToolBtn
+					onClick={onSelectMode}
+					tooltipText="Create mode"
+					active={true}
+					pressed={selectMode}
+				>
 					<PointerIcon />
 				</ToolBtn>
-				<ToolBtn onClick={onWeightMode} active={true} pressed={weightMode}>
+				<ToolBtn
+					onClick={onWeightMode}
+					tooltipText="Weight mode"
+					active={true}
+					pressed={weightMode}
+				>
 					<HashIcon />
 				</ToolBtn>
 				<ToolBtn
 					onClick={() => onScale('up')}
+					tooltipText="Upscale mode"
 					active={true}
 					pressed={scaleModeUp}
 				>
@@ -183,19 +196,31 @@ function Toolbar({
 				</ToolBtn>
 				<ToolBtn
 					onClick={() => onScale('down')}
+					tooltipText="Downscale mode"
 					active={true}
 					pressed={scaleModeDown}
 				>
 					<ArrowDownIcon />
 				</ToolBtn>
-				<ToolBtn onClick={onDeleteMode} active={true} pressed={deleteMode}>
+				<ToolBtn
+					onClick={onDeleteMode}
+					tooltipText="Delete mode"
+					active={true}
+					pressed={deleteMode}
+				>
 					<TrashIcon />
 				</ToolBtn>
-				<ToolBtn onClick={onColorMode} active={true} pressed={colorMode}>
+				<ToolBtn
+					onClick={onColorMode}
+					tooltipText="Color mode"
+					active={true}
+					pressed={colorMode}
+				>
 					<FillIcon />
 				</ToolBtn>
 				<ToolBtn
 					onClick={() => connectionActive && onConnect(type)}
+					tooltipText="Connect mode"
 					active={connectionActive}
 				>
 					<ConnectionsIcon />
@@ -217,6 +242,7 @@ function Toolbar({
 			</div>
 			<div className={styles.save}>
 				<UploadBtn
+					tooltipText="Upload saved graph"
 					setNodes={setNodes}
 					setEdges={setEdges}
 					setNodesColor={setNodesColor}
@@ -226,17 +252,22 @@ function Toolbar({
 					active={true}
 				/>
 
-				<SaveBtn onShowChoice={() => setShowChoiceSave((prev) => !prev)}>
+				<SaveBtn
+					tooltipText="Save graph"
+					onShowChoice={() => setShowChoiceSave((prev) => !prev)}
+				>
 					{showChoiceSave && (
 						<Choice
 							choices={[
 								{
 									text: '.json',
 									func: onSaveGraphJSON,
+									tooltip: 'Save with full settings',
 								},
 								{
 									text: '.txt',
 									func: onSaveGraphTXT,
+									tooltip: 'Save only array',
 								},
 							]}
 							upper

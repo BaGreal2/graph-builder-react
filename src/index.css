@@ -1,7 +1,14 @@
+@font-face {
+	font-family: 'FiraCode';
+	src: url('./assets/fonts/FiraCode/FiraCode-VariableFont_wght.ttf')
+		format('truetype');
+}
+
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	font-family: 'FiraCode';
 }
 
 a {
@@ -29,15 +36,4 @@ input[type='color']::-webkit-color-swatch-wrapper {
 }
 input[type='color']::-webkit-color-swatch {
 	border: none;
-}
-
-@media only screen and (max-width: 758px) {
-	.app {
-		flex-direction: column-reverse;
-	}
-	a {
-		min-height: 100%;
-		min-width: 40px;
-		align-items: center;
-	}
 }
