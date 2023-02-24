@@ -1,6 +1,6 @@
 import React from 'react';
 import { Circle, Group, Text } from 'react-konva';
-import { generateEdges } from '../../helpers';
+import { countColor, generateEdges } from '../../helpers';
 
 const Node = React.memo(
 	({
@@ -14,6 +14,8 @@ const Node = React.memo(
 		deleteMode,
 		nodesColor,
 		type,
+		viewVisited,
+		viewDead,
 	}) => {
 		// normal: #2a507e
 		// selected: #c28547
@@ -21,7 +23,19 @@ const Node = React.memo(
 		const { index, x, y, radius } = node;
 		const selectColorDiff = 0x2a507e - 0xc28547;
 		const textColorDiff = 0x2a507e - 0xafcfe4;
+		const visitedColorDiff = 0x2a507e - 0xba7245;
+		const deadColorDiff = 0x2a507e - 0x4d4d4f;
 		const selected = nodesSelected.includes(node);
+		let currFill = nodesColor;
+		if (selected) {
+			currFill = countColor(nodesColor, selectColorDiff);
+		}
+		if (viewVisited[index - 1]) {
+			currFill = countColor(nodesColor, visitedColorDiff);
+		}
+		if (viewDead[index - 1]) {
+			currFill = countColor(nodesColor, deadColorDiff);
+		}
 
 		function onSelect() {
 			const nodesCopy = [...nodes];
@@ -127,19 +141,7 @@ const Node = React.memo(
 				onMouseLeave={() => (document.body.style.cursor = 'default')}
 				onClick={() => onClick()}
 			>
-				<Circle
-					radius={radius}
-					fill={
-						selected
-							? (
-									'#' +
-									Math.abs(
-										parseInt(nodesColor.substring(1), 16) - selectColorDiff
-									).toString(16)
-							  ).substring(0, 7)
-							: nodesColor
-					}
-				/>
+				<Circle radius={radius} fill={currFill} />
 				<Text
 					x={index < 10 ? -5.5 : -11}
 					y={-7}

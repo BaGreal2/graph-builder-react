@@ -1,6 +1,7 @@
 import { saveAs } from 'file-saver';
 import { useState } from 'react';
 import {
+	AlgorithmIcon,
 	ArrowDownIcon,
 	ArrowUpIcon,
 	ConnectionsIcon,
@@ -8,8 +9,8 @@ import {
 	HashIcon,
 	PointerIcon,
 	TrashIcon,
-} from '../../assets/icons';
-import { generateEdges } from '../../helpers';
+} from '../../assets/fonts/icons';
+import { deepFirstSearch, generateEdges } from '../../helpers';
 import Choice from '../Choice';
 import ColorSelection from '../ColorSelection';
 import SaveBtn from './SaveBtn';
@@ -40,10 +41,14 @@ function Toolbar({
 	connectionActive,
 	type,
 	setType,
+	setViewVisited,
+	setViewDead,
 }) {
 	const [showChoiceColor, setShowChoiceColor] = useState(false);
 	const [showChoiceSave, setShowChoiceSave] = useState(false);
+	const [showAlgorithms, setShowAlgorithms] = useState(false);
 	const [firstClick, setFirstClick] = useState(true);
+
 	const scaleModeUp = scaleMode === 'up';
 	const scaleModeDown = scaleMode === 'down';
 
@@ -161,10 +166,27 @@ function Toolbar({
 		setShowChoiceColor(false);
 		onConnect('direct');
 	}
+
 	function onUndirect() {
 		setType('undirect');
 		setShowChoiceColor(false);
 		onConnect('undirect');
+	}
+
+	function onDFS() {
+		const n = nodes.length;
+		let visited = new Array(n).fill(false);
+		let deadEnds = new Array(n).fill(false);
+		console.log([...visited]);
+		deepFirstSearch(
+			nodes,
+			visited,
+			deadEnds,
+			setViewVisited,
+			setViewDead,
+			nodes[3]
+		);
+		console.log([...visited]);
 	}
 
 	return (
@@ -217,6 +239,25 @@ function Toolbar({
 					pressed={colorMode}
 				>
 					<FillIcon />
+				</ToolBtn>
+				<ToolBtn
+					onClick={() => setShowAlgorithms((prev) => !prev)}
+					tooltipText="Algorithms"
+					active={true}
+					pressed={showAlgorithms}
+				>
+					<AlgorithmIcon />
+					{showAlgorithms && (
+						<Choice
+							choices={[
+								{
+									text: 'DFS',
+									func: onDFS,
+									tooltip: 'Deep First Search',
+								},
+							]}
+						/>
+					)}
 				</ToolBtn>
 				<ToolBtn
 					onClick={() => connectionActive && onConnect(type)}

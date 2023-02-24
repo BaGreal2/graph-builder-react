@@ -22,6 +22,9 @@ function App() {
 	const [edgesColor, setEdgesColor] = useState('#ffffff');
 	// graph type
 	const [type, setType] = useState('');
+	// algorithm variables
+	const [viewVisited, setViewVisited] = useState([]);
+	const [viewDead, setViewDead] = useState([]);
 
 	// creating node on field click
 	function onCreateNode(e) {
@@ -78,6 +81,8 @@ function App() {
 				connectionActive={nodesSelected.length > 1}
 				type={type}
 				setType={setType}
+				setViewVisited={setViewVisited}
+				setViewDead={setViewDead}
 			/>
 			<Stage
 				width={window.innerWidth - 50}
@@ -115,6 +120,8 @@ function App() {
 								deleteMode={deleteMode}
 								nodesColor={nodesColor}
 								type={type}
+								viewVisited={viewVisited}
+								viewDead={viewDead}
 							/>
 						);
 					})}

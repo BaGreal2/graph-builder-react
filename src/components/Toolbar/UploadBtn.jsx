@@ -1,4 +1,4 @@
-import { UploadIcon } from '../../assets/icons';
+import { UploadIcon } from '../../assets/fonts/icons';
 import { generateEdges, getRandomInt } from '../../helpers';
 import styles from './UploadBtn.module.css';
 

@@ -5,7 +5,7 @@
 	align-items: center;
 	justify-content: space-around;
 	left: 130%;
-	width: 100px;
+	min-width: 100px;
 	height: 80px;
 	background-color: #132439;
 	color: #afcfe4;
@@ -20,7 +20,7 @@
 	justify-content: space-around;
 	top: -40px;
 	left: 130%;
-	width: 100px;
+	min-width: 100px;
 	height: 80px;
 	background-color: #132439;
 	color: #afcfe4;

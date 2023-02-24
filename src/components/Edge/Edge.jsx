@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Arrow, Group, Line, Text } from 'react-konva';
-import { generateEdges } from '../../helpers';
+import { countColor, generateEdges } from '../../helpers';
 
 const Edge = React.memo(
 	({ edge, weightMode, deleteMode, edgesColor, nodes, setNodes, setEdges }) => {
 		const { from, to, index1, index2, weight, points, type } = edge;
 		const [weightCurr, setWeightCurr] = useState(weight);
 		const weightColorDiff = 0xffffff - 0xc28547;
+		const weightColor = countColor(edgesColor, weightColorDiff);
 
 		function addWeight() {
 			const nodesCopy = [...nodes];
@@ -89,12 +90,7 @@ const Edge = React.memo(
 						x={(points[0] + points[2]) / 2}
 						y={(points[1] + points[3]) / 2}
 						fontSize={22}
-						fill={(
-							'#' +
-							Math.abs(
-								parseInt(edgesColor.substring(1), 16) - weightColorDiff
-							).toString(16)
-						).substring(0, 7)}
+						fill={weightColor}
 						text={weightCurr}
 						verticalAlign="middle"
 						align="center"
