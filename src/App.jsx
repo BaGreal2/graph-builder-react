@@ -10,12 +10,15 @@ function App() {
 	const [edges, setEdges] = useState([]);
 	const [nodesSelected, setNodesSelected] = useState([]);
 	const [scaleMode, setScaleMode] = useState('');
+	// modes states
 	const [selectMode, setSelectMode] = useState(true);
 	const [weightMode, setWeightMode] = useState(false);
 	const [deleteMode, setDeleteMode] = useState(false);
 	const [colorMode, setColorMode] = useState(false);
+	// color states
 	const [nodesColor, setNodesColor] = useState('#2a507e');
 	const [edgesColor, setEdgesColor] = useState('#ffffff');
+	// graph type
 	const [type, setType] = useState('');
 
 	// creating node on field click
@@ -42,7 +45,6 @@ function App() {
 				x: e.layerX,
 				y: e.layerY,
 				radius: 20,
-				selected: false,
 				connections: [],
 			},
 		]);
@@ -63,8 +65,7 @@ function App() {
 				setSelectMode={setSelectMode}
 				weightMode={weightMode}
 				setWeightMode={setWeightMode}
-				scaleModeUp={scaleMode === 'up'}
-				scaleModeDown={scaleMode === 'down'}
+				scaleMode={scaleMode}
 				setScaleMode={setScaleMode}
 				colorMode={colorMode}
 				setColorMode={setColorMode}
@@ -72,7 +73,7 @@ function App() {
 				setNodesColor={setNodesColor}
 				edgesColor={edgesColor}
 				setEdgesColor={setEdgesColor}
-				connectionActive={nodes.filter((node) => node.selected).length > 1}
+				connectionActive={nodesSelected.length > 1}
 				type={type}
 				setType={setType}
 			/>
@@ -101,7 +102,6 @@ function App() {
 						return (
 							<Node
 								key={id}
-								index={id + 1}
 								node={node}
 								nodesSelected={nodesSelected}
 								setNodesSelected={setNodesSelected}

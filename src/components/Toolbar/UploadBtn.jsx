@@ -1,3 +1,4 @@
+import { UploadIcon } from '../../assets/icons';
 import { generateEdges } from '../../helpers';
 import styles from './UploadBtn.module.css';
 
@@ -5,11 +6,10 @@ function UploadBtn({
 	setNodes,
 	setEdges,
 	setType,
-	setConnectClicks,
+	setFirstClick,
 	active,
 	setNodesColor,
 	setEdgesColor,
-	children,
 	pressed = false,
 }) {
 	function onChange(e) {
@@ -28,7 +28,7 @@ function UploadBtn({
 		setType(type);
 		setNodesColor(nodesColor);
 		setEdgesColor(edgesColor);
-		setConnectClicks((prev) => prev + 1);
+		setFirstClick(false);
 		generateEdges(nodes, type, setEdges);
 	}
 	return (
@@ -39,7 +39,7 @@ function UploadBtn({
 				}`}
 				htmlFor="upload-file"
 			>
-				{children}
+				<UploadIcon />
 			</label>
 			<input
 				id="upload-file"

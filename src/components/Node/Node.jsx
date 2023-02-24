@@ -1,10 +1,9 @@
 import React from 'react';
 import { Circle, Group, Text } from 'react-konva';
-import { generateEdges, getConnectorPoints } from '../../helpers';
+import { generateEdges } from '../../helpers';
 
 const Node = React.memo(
 	({
-		index,
 		node,
 		nodesSelected,
 		setNodesSelected,
@@ -19,23 +18,19 @@ const Node = React.memo(
 		// normal: #2a507e
 		// selected: #c28547
 		// text: #afcfe4
-		const { x, y, radius, selected } = node;
+		const { index, x, y, radius } = node;
 		const selectColorDiff = 0x2a507e - 0xc28547;
 		const textColorDiff = 0x2a507e - 0xafcfe4;
+		const selected = nodesSelected.includes(node);
 
 		function onSelect() {
 			const nodesCopy = [...nodes];
 			const nodesSelectedCopy = [...nodesSelected];
 
-			nodesCopy[index - 1].selected = !nodesCopy[index - 1].selected;
-
-			if (nodesCopy[index - 1].selected) {
-				nodesSelectedCopy.push(nodesCopy[index - 1]);
+			if (!selected) {
+				nodesSelectedCopy.push(node);
 			} else {
-				nodesSelectedCopy.splice(
-					nodesSelectedCopy.indexOf(nodesCopy[index - 1]),
-					1
-				);
+				nodesSelectedCopy.splice(nodesSelectedCopy.indexOf(node), 1);
 			}
 
 			setNodesSelected([...nodesSelectedCopy]);
@@ -55,7 +50,7 @@ const Node = React.memo(
 				default:
 					return;
 			}
-			const validRad = nodesCopy[index - 1].radius + delta >= 20;
+			const validRad = node.radius + delta >= 20;
 			nodesCopy[index - 1].radius += validRad ? delta : 0;
 			setNodes([...nodesCopy]);
 		}
@@ -66,20 +61,17 @@ const Node = React.memo(
 			nodesCopy.splice(index - 1, 1);
 			nodesCopy.forEach((node) => {
 				node.connections = node.connections.filter(
-					(connection) => !connection.includes(index - 1)
+					(connection) => connection[0] !== index
 				);
 			});
-
-			generateEdges(nodesCopy, type, setEdges);
-			setNodes([...nodesCopy]);
-		}
-
-		function onDragMove(e) {
-			document.body.style.cursor = 'grabbing';
-			const nodesCopy = [...nodes];
-
-			nodesCopy[index - 1].x = e.target.attrs.x;
-			nodesCopy[index - 1].y = e.target.attrs.y;
+			nodesCopy.forEach((node, idx) => {
+				node.index = idx + 1;
+				node.connections.forEach((connection) => {
+					if (connection[0] >= index) {
+						connection[0]--;
+					}
+				});
+			});
 
 			generateEdges(nodesCopy, type, setEdges);
 			setNodes([...nodesCopy]);
@@ -95,6 +87,17 @@ const Node = React.memo(
 				return;
 			}
 			onSelect();
+		}
+
+		function onDragMove(e) {
+			document.body.style.cursor = 'grabbing';
+			const nodesCopy = [...nodes];
+
+			nodesCopy[index - 1].x = e.target.attrs.x;
+			nodesCopy[index - 1].y = e.target.attrs.y;
+
+			generateEdges(nodesCopy, type, setEdges);
+			setNodes([...nodesCopy]);
 		}
 
 		function dragBoundFunc(pos) {

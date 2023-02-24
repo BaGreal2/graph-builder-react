@@ -9,61 +9,33 @@ const Edge = React.memo(
 		const weightColorDiff = 0xffffff - 0xc28547;
 
 		function addWeight() {
-			if (!weightMode) {
-				return;
-			}
 			const nodesCopy = [...nodes];
-			let userWeight = prompt('Enter weight:');
+			const userWeight = prompt('Enter weight:');
+			let weight = null;
 
 			if (isNaN(userWeight)) {
 				alert('Enter a valid number!');
 				return;
 			}
-
-			if (userWeight === '') {
-				nodesCopy.find((node) => {
-					if (node.index === from) {
-						node.connections[index1 - 1][1] = null;
-					}
-				});
-				if (type === 'undirect') {
-					nodesCopy.find((node) => {
-						if (node.index === to) {
-							node.connections[index2 - 1][1] = null;
-						}
-					});
-				}
-
-				setWeightCurr('');
-				return;
+			if (userWeight !== '') {
+				weight = Number(userWeight);
 			}
 
-			userWeight = Number(userWeight);
-
-			nodesCopy.find((node) => {
-				if (node.index === from) {
-					node.connections[index1 - 1][1] = userWeight;
-				}
-			});
-			if (type === 'undirect') {
-				nodesCopy.find((node) => {
-					if (node.index === to) {
-						node.connections[index2 - 1][1] = userWeight;
-					}
-				});
+			nodesCopy[from - 1].connections[index1 - 1][1] = weight;
+			if (nodesCopy[to - 1].connections[index2 - 1][0] === from) {
+				nodesCopy[to - 1].connections[index2 - 1][1] = weight;
 			}
+
+			console.log(nodesCopy);
 			setWeightCurr(userWeight);
 			setNodes([...nodesCopy]);
 		}
 
 		function onDelete() {
-			if (!deleteMode) {
-				return;
-			}
 			const nodesCopy = [...nodes];
 			nodesCopy.forEach((node) => {
 				node.connections = node.connections.filter(
-					(connection) => !connection.includes(from) && !connection.includes(to)
+					(connection) => connection[0] !== from && connection[0] !== to
 				);
 			});
 			generateEdges(nodesCopy, type, setEdges);
@@ -71,8 +43,14 @@ const Edge = React.memo(
 		}
 
 		function onClick() {
-			addWeight();
-			onDelete();
+			if (weightMode) {
+				addWeight();
+				return;
+			}
+			if (deleteMode) {
+				onDelete();
+				return;
+			}
 		}
 
 		return (

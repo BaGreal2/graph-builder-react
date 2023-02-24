@@ -10,8 +10,10 @@ import {
 	TrashIcon,
 	UploadIcon,
 } from '../../assets/icons';
-import { generateEdges, getConnectorPoints } from '../../helpers';
+import { generateEdges } from '../../helpers';
 import Choice from '../Choice';
+import ColorSelection from '../ColorSelection';
+import SaveBtn from './SaveBtn';
 import styles from './Toolbar.module.css';
 import ToolBtn from './ToolBtn';
 import UploadBtn from './UploadBtn';
@@ -28,8 +30,7 @@ function Toolbar({
 	setSelectMode,
 	weightMode,
 	setWeightMode,
-	scaleModeUp,
-	scaleModeDown,
+	scaleMode,
 	setScaleMode,
 	colorMode,
 	setColorMode,
@@ -43,13 +44,15 @@ function Toolbar({
 }) {
 	const [downloadUrl, setDownloadUrl] = useState(null);
 	const [showChoice, setShowChoice] = useState(false);
-	const [connectClicks, setConnectClicks] = useState(0);
+	const [firstClick, setFirstClick] = useState(true);
+	const scaleModeUp = scaleMode === 'up';
+	const scaleModeDown = scaleMode === 'down';
 
 	// connecting selected edges
 	function onConnect(type) {
 		// showing modal dialog only once
-		setConnectClicks((prev) => prev + 1);
-		if (connectClicks === 0) {
+		setFirstClick(false);
+		if (firstClick) {
 			setShowChoice(true);
 			return;
 		}
@@ -74,23 +77,13 @@ function Toolbar({
 				continue;
 			}
 
-			nodesCopy.find((node, idx) => {
-				if (node.index === node1.index) {
-					nodesCopy[idx].connections.push([node2.index, '']);
-					return true;
-				}
-			});
+			nodesCopy[node1.index - 1].connections.push([node2.index, null]);
+
 			if (type === 'undirect') {
-				nodesCopy.find((node, idx) => {
-					if (node.index === node2.index) {
-						nodesCopy[idx].connections.push([node1.index, '']);
-						return true;
-					}
-				});
+				nodesCopy[node2.index - 1].connections.push([node1.index, null]);
 			}
 		}
 
-		nodesCopy.forEach((node) => (node.selected = false));
 		setNodesSelected([]);
 		generateEdges(nodesCopy, type, setEdges);
 		setNodes([...nodesCopy]);
@@ -195,42 +188,19 @@ function Toolbar({
 					setNodesColor={setNodesColor}
 					setEdgesColor={setEdgesColor}
 					setType={setType}
-					setConnectClicks={setConnectClicks}
+					setFirstClick={setFirstClick}
 					active={true}
-				>
-					<UploadIcon />
-				</UploadBtn>
+				/>
 
-				<a download={'graph.json'} href={downloadUrl}>
-					<ToolBtn onClick={onSaveGraph} active={true}>
-						<SaveIcon />
-					</ToolBtn>
-				</a>
+				<SaveBtn downloadUrl={downloadUrl} onSaveGraph={onSaveGraph} />
 			</div>
 			{colorMode && (
-				<div className={styles.colorInputWrapper}>
-					<input
-						className={styles.colorNodesInput}
-						type="color"
-						onChange={(e) => setNodesColor(e.target.value)}
-						value={nodesColor}
-					/>
-					<input
-						className={styles.colorEdgesInput}
-						type="color"
-						onChange={(e) => setEdgesColor(e.target.value)}
-						value={edgesColor}
-					/>
-					<button
-						className={styles.defaultColor}
-						onClick={() => {
-							setNodesColor('#2a507e');
-							setEdgesColor('#ffffff');
-						}}
-					>
-						Set Default
-					</button>
-				</div>
+				<ColorSelection
+					edgesColor={edgesColor}
+					nodesColor={nodesColor}
+					setEdgesColor={setEdgesColor}
+					setNodesColor={setNodesColor}
+				/>
 			)}
 		</div>
 	);
