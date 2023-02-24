@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver';
 import { useState } from 'react';
 import {
 	ArrowDownIcon,
@@ -42,8 +43,8 @@ function Toolbar({
 	type,
 	setType,
 }) {
-	const [downloadUrl, setDownloadUrl] = useState(null);
-	const [showChoice, setShowChoice] = useState(false);
+	const [showChoiceColor, setShowChoiceColor] = useState(false);
+	const [showChoiceSave, setShowChoiceSave] = useState(false);
 	const [firstClick, setFirstClick] = useState(true);
 	const scaleModeUp = scaleMode === 'up';
 	const scaleModeDown = scaleMode === 'down';
@@ -53,10 +54,10 @@ function Toolbar({
 		// showing modal dialog only once
 		setFirstClick(false);
 		if (firstClick) {
-			setShowChoice(true);
+			setShowChoiceColor(true);
 			return;
 		}
-		setShowChoice(false);
+		setShowChoiceColor(false);
 		if (type === '') {
 			return;
 		}
@@ -126,7 +127,7 @@ function Toolbar({
 		setColorMode((prev) => !prev);
 	}
 
-	function onSaveGraph() {
+	function onSaveGraphJSON() {
 		const saveObj = {
 			type,
 			nodesColor,
@@ -134,8 +135,34 @@ function Toolbar({
 			nodes,
 		};
 		const fileData = JSON.stringify(saveObj);
+		let userFileName = prompt('Enter filename:');
+		if (!userFileName) {
+			userFileName = 'graph';
+		}
 		const blob = new Blob([fileData], { type: 'text/plain' });
-		setDownloadUrl(URL.createObjectURL(blob));
+		saveAs(blob, userFileName + '.json');
+	}
+
+	function onSaveGraphTXT() {
+		const saveNodesArr = nodes.map((node) => node.connections);
+		const fileData = JSON.stringify(saveNodesArr);
+		let userFileName = prompt('Enter filename:');
+		if (!userFileName) {
+			userFileName = 'graph';
+		}
+		const blob = new Blob([fileData], { type: 'text/plain' });
+		saveAs(blob, userFileName + '.txt');
+	}
+
+	function onDirect() {
+		setType('direct');
+		setShowChoiceColor(false);
+		onConnect('direct');
+	}
+	function onUndirect() {
+		setType('undirect');
+		setShowChoiceColor(false);
+		onConnect('undirect');
 	}
 
 	return (
@@ -172,11 +199,18 @@ function Toolbar({
 					active={connectionActive}
 				>
 					<ConnectionsIcon />
-					{showChoice && (
+					{showChoiceColor && (
 						<Choice
-							setType={setType}
-							setShowChoice={setShowChoice}
-							onConnect={onConnect}
+							choices={[
+								{
+									text: 'Directed',
+									func: onDirect,
+								},
+								{
+									text: 'Undirected',
+									func: onUndirect,
+								},
+							]}
 						/>
 					)}
 				</ToolBtn>
@@ -192,7 +226,23 @@ function Toolbar({
 					active={true}
 				/>
 
-				<SaveBtn downloadUrl={downloadUrl} onSaveGraph={onSaveGraph} />
+				<SaveBtn onShowChoice={() => setShowChoiceSave((prev) => !prev)}>
+					{showChoiceSave && (
+						<Choice
+							choices={[
+								{
+									text: '.json',
+									func: onSaveGraphJSON,
+								},
+								{
+									text: '.txt',
+									func: onSaveGraphTXT,
+								},
+							]}
+							upper
+						/>
+					)}
+				</SaveBtn>
 			</div>
 			{colorMode && (
 				<ColorSelection

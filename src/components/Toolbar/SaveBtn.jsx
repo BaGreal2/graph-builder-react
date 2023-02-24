@@ -1,13 +1,12 @@
 import { SaveIcon } from '../../assets/icons';
 import ToolBtn from './ToolBtn';
 
-function SaveBtn({ downloadUrl, onSaveGraph }) {
+function SaveBtn({ onShowChoice, children }) {
 	return (
-		<a download={'graph.json'} href={downloadUrl}>
-			<ToolBtn onClick={onSaveGraph} active={true}>
-				<SaveIcon />
-			</ToolBtn>
-		</a>
+		<ToolBtn onClick={onShowChoice} active={true}>
+			<SaveIcon />
+			{children}
+		</ToolBtn>
 	);
 }
 
