@@ -3,12 +3,18 @@ import { Arrow, Group, Line, Text } from 'react-konva';
 import { countColor, generateEdges } from '../../helpers';
 
 const Edge = React.memo(
-	({ edge, weightMode, deleteMode, edgesColor, nodes, setNodes, setEdges }) => {
+	({ edge, mode, edgesColor, nodes, setNodes, setEdges }) => {
+		// destructing edge
 		const { from, to, index1, index2, weight, points, type } = edge;
+		// setting current weight state
 		const [weightCurr, setWeightCurr] = useState(weight);
+		// weight color diff and setting
 		const weightColorDiff = 0xffffff - 0xc28547;
 		const weightColor = countColor(edgesColor, weightColorDiff);
+		// deciding wether edge is in select state
+		const selectState = mode === 'weight' || mode === 'delete';
 
+		// adding weight to current edge
 		function addWeight() {
 			const nodesCopy = [...nodes];
 			const userWeight = prompt('Enter weight:');
@@ -32,6 +38,7 @@ const Edge = React.memo(
 			setNodes([...nodesCopy]);
 		}
 
+		// deleting current edge
 		function onDelete() {
 			const nodesCopy = [...nodes];
 			nodesCopy.forEach((node) => {
@@ -43,14 +50,17 @@ const Edge = React.memo(
 			setNodes([...nodesCopy]);
 		}
 
+		// onclick depending on mode
 		function onClick() {
-			if (weightMode) {
-				addWeight();
-				return;
-			}
-			if (deleteMode) {
-				onDelete();
-				return;
+			switch (mode) {
+				case 'weight':
+					addWeight();
+					break;
+				case 'delete':
+					onDelete();
+					break;
+				default:
+					break;
 			}
 		}
 
@@ -59,8 +69,7 @@ const Edge = React.memo(
 				width={100}
 				height={Math.abs(points[0] - points[2])}
 				onMouseEnter={() =>
-					(document.body.style.cursor =
-						weightMode || deleteMode ? 'pointer' : 'default')
+					(document.body.style.cursor = selectState ? 'pointer' : 'default')
 				}
 				onMouseLeave={() => (document.body.style.cursor = 'default')}
 				onClick={() => onClick()}
@@ -69,7 +78,7 @@ const Edge = React.memo(
 					<Line
 						fill={edgesColor}
 						stroke={edgesColor}
-						strokeWidth={weightMode || deleteMode ? 5 : 2}
+						strokeWidth={selectState ? 5 : 2}
 						hitStrokeWidth={35}
 						points={points}
 					/>
@@ -79,7 +88,7 @@ const Edge = React.memo(
 					<Arrow
 						fill={edgesColor}
 						stroke={edgesColor}
-						strokeWidth={weightMode || deleteMode ? 5 : 2}
+						strokeWidth={selectState ? 5 : 2}
 						hitStrokeWidth={35}
 						points={points}
 					/>

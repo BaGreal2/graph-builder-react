@@ -10,8 +10,7 @@ const Node = React.memo(
 		nodes,
 		setNodes,
 		setEdges,
-		scaleMode,
-		deleteMode,
+		mode,
 		nodesColor,
 		type,
 		viewVisited,
@@ -20,15 +19,17 @@ const Node = React.memo(
 		setViewDead,
 		algorithm,
 	}) => {
-		// normal: #2a507e
-		// selected: #c28547
-		// text: #afcfe4
+		// destructing node
 		const { index, x, y, radius } = node;
+		// setting color diffs
 		const selectColorDiff = 0x2a507e - 0xc28547;
 		const textColorDiff = 0x2a507e - 0xafcfe4;
 		const visitedColorDiff = 0x2a507e - 0xba7245;
 		const deadColorDiff = 0x2a507e - 0x4d4d4f;
+		// checking if node is selected
 		const selected = nodesSelected.includes(node);
+
+		// deciding color depending on state
 		let currFill = nodesColor;
 		if (selected) {
 			currFill = countColor(nodesColor, selectColorDiff);
@@ -40,6 +41,7 @@ const Node = React.memo(
 			currFill = countColor(nodesColor, deadColorDiff);
 		}
 
+		// selecting node
 		function onSelect() {
 			const nodesCopy = [...nodes];
 			const nodesSelectedCopy = [...nodesSelected];
@@ -54,6 +56,7 @@ const Node = React.memo(
 			setNodes([...nodesCopy]);
 		}
 
+		// scaling node
 		function onScale(mode) {
 			const nodesCopy = [...nodes];
 			let delta;
@@ -67,11 +70,13 @@ const Node = React.memo(
 				default:
 					return;
 			}
+
 			const validRad = node.radius + delta >= 20;
 			nodesCopy[index - 1].radius += validRad ? delta : 0;
 			setNodes([...nodesCopy]);
 		}
 
+		// deleting node
 		function onDelete() {
 			const nodesCopy = [...nodes];
 
@@ -94,6 +99,7 @@ const Node = React.memo(
 			setNodes([...nodesCopy]);
 		}
 
+		// running current algorithm
 		function onAlgorithm() {
 			switch (algorithm) {
 				case 'dfs':
@@ -101,22 +107,27 @@ const Node = React.memo(
 			}
 		}
 
+		// onclick depending on mode
 		function onClick() {
-			if (scaleMode) {
-				onScale(scaleMode);
-				return;
+			switch (mode) {
+				case 'scaleup':
+					onScale('up');
+					break;
+				case 'scaledown':
+					onScale('down');
+					break;
+				case 'delete':
+					onDelete();
+					break;
+				case 'algorithm':
+					onAlgorithm();
+				default:
+					onSelect();
+					break;
 			}
-			if (deleteMode) {
-				onDelete();
-				return;
-			}
-			if (algorithm !== '') {
-				onAlgorithm();
-				return;
-			}
-			onSelect();
 		}
 
+		// saving x and y on drag
 		function onDragMove(e) {
 			document.body.style.cursor = 'grabbing';
 			const nodesCopy = [...nodes];
@@ -128,6 +139,7 @@ const Node = React.memo(
 			setNodes([...nodesCopy]);
 		}
 
+		// setting drag boundaries
 		function dragBoundFunc(pos) {
 			const stageWidth = window.innerWidth - 50;
 			const stageHeight = window.innerHeight;
@@ -161,12 +173,7 @@ const Node = React.memo(
 					y={-7}
 					fontSize={20}
 					fontStyle="bold"
-					fill={(
-						'#' +
-						Math.abs(
-							parseInt(nodesColor.substring(1), 16) - textColorDiff
-						).toString(16)
-					).substring(0, 7)}
+					fill={countColor(nodesColor, textColorDiff)}
 					text={index}
 				/>
 			</Group>

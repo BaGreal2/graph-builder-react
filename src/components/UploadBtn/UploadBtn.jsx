@@ -13,6 +13,7 @@ function UploadBtn({
 	setEdgesColor,
 	pressed = false,
 }) {
+	// loading file
 	function onChange(e) {
 		if (e.target.files) {
 			const file = e.target.files[0];
@@ -22,8 +23,8 @@ function UploadBtn({
 			reader.readAsText(file);
 		}
 	}
-	// updating states to loaded file
 
+	// updating states to loaded .txt file
 	function onReaderLoadTXT(e) {
 		const res = JSON.parse(e.target.result);
 		const nodesRaw = res.nodes;
@@ -49,6 +50,7 @@ function UploadBtn({
 		generateEdges(nodesNew, type, setEdges);
 	}
 
+	// updating states to loaded .json file
 	function onReaderLoadJSON(e) {
 		const res = JSON.parse(e.target.result);
 		const { type, nodesColor, edgesColor, nodes } = res;

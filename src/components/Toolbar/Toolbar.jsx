@@ -13,10 +13,10 @@ import {
 import { deepFirstSearch, generateEdges } from '../../helpers';
 import Choice from '../Choice';
 import ColorSelection from '../ColorSelection';
+import UploadBtn from '../UploadBtn';
 import SaveBtn from './SaveBtn';
 import styles from './Toolbar.module.css';
 import ToolBtn from './ToolBtn';
-import UploadBtn from './UploadBtn';
 
 function Toolbar({
 	nodes,
@@ -24,32 +24,23 @@ function Toolbar({
 	setNodesSelected,
 	setNodes,
 	setEdges,
-	deleteMode,
-	setDeleteMode,
-	selectMode,
-	setSelectMode,
-	weightMode,
-	setWeightMode,
-	scaleMode,
-	setScaleMode,
-	colorMode,
-	setColorMode,
+	mode,
+	setMode,
 	nodesColor,
 	setNodesColor,
 	edgesColor,
 	setEdgesColor,
-	connectionActive,
 	type,
 	setType,
 	setAlgorithm,
 }) {
+	// setting toolbar states
 	const [showChoiceColor, setShowChoiceColor] = useState(false);
 	const [showChoiceSave, setShowChoiceSave] = useState(false);
 	const [showAlgorithms, setShowAlgorithms] = useState(false);
 	const [firstClick, setFirstClick] = useState(true);
-
-	const scaleModeUp = scaleMode === 'up';
-	const scaleModeDown = scaleMode === 'down';
+	// checking if connection button needs to be active
+	const connectionActive = nodes.length > 1;
 
 	// connecting selected edges
 	function onConnect(type) {
@@ -92,151 +83,104 @@ function Toolbar({
 		setNodes([...nodesCopy]);
 	}
 
-	function onScale(mode) {
-		setAlgorithm('');
-		setSelectMode(false);
-		setWeightMode(false);
-		setDeleteMode(false);
-		setScaleMode(mode);
-	}
-
-	function onWeightMode() {
-		setScaleMode('');
-		setAlgorithm('');
-		setSelectMode(false);
-		setDeleteMode(false);
-		setColorMode(false);
-		setWeightMode((prev) => !prev);
-	}
-
-	function onSelectMode() {
-		setScaleMode('');
-		setAlgorithm('');
-		setWeightMode(false);
-		setDeleteMode(false);
-		setColorMode(false);
-		setSelectMode((prev) => !prev);
-	}
-	function onDeleteMode() {
-		setScaleMode('');
-		setAlgorithm('');
-		setWeightMode(false);
-		setSelectMode(false);
-		setColorMode(false);
-		setDeleteMode((prev) => !prev);
-	}
-	function onColorMode() {
-		setScaleMode('');
-		setAlgorithm('');
-		setWeightMode(false);
-		setSelectMode(false);
-		setDeleteMode(false);
-		setColorMode((prev) => !prev);
-	}
-
-	function onAlgorithmMode(algorithm) {
-		if (nodes.length === 0) {
-			return;
-		}
-		setScaleMode('');
-		setWeightMode(false);
-		setSelectMode(false);
-		setDeleteMode(false);
-		setColorMode(false);
-		setAlgorithm(algorithm);
-	}
-
-	function onSaveGraphJSON() {
-		const saveObj = {
-			type,
-			nodesColor,
-			edgesColor,
-			nodes,
-		};
-		const fileData = JSON.stringify(saveObj);
-		let userFileName = prompt('Enter filename:');
-		if (!userFileName) {
-			userFileName = 'graph';
-		}
-		const blob = new Blob([fileData], { type: 'text/plain' });
-		saveAs(blob, userFileName + '.json');
-	}
-
-	function onSaveGraphTXT() {
-		const saveNodesArr = nodes.map((node) => node.connections);
-		const saveObj = {
-			type,
-			nodes: saveNodesArr,
-		};
-		const fileData = JSON.stringify(saveObj);
-		let userFileName = prompt('Enter filename:');
-		if (!userFileName) {
-			userFileName = 'graph';
-		}
-		const blob = new Blob([fileData], { type: 'text/plain' });
-		saveAs(blob, userFileName + '.txt');
-	}
-
+	// connecting directed graph
 	function onDirect() {
 		setType('direct');
 		setShowChoiceColor(false);
 		onConnect('direct');
 	}
 
+	// connecting undirected graph
 	function onUndirect() {
 		setType('undirect');
 		setShowChoiceColor(false);
 		onConnect('undirect');
 	}
 
+	// setting algorithm
+	function onAlgorithmMode(algorithm) {
+		if (nodes.length === 0) {
+			return;
+		}
+		setMode('algorithm');
+		setAlgorithm(algorithm);
+	}
+
+	//save graph to file
+	function onSaveGraph(format) {
+		let saveObj;
+		if (format === '.json') {
+			saveObj = {
+				type,
+				nodesColor,
+				edgesColor,
+				nodes,
+			};
+		} else {
+			const saveNodesArr = nodes.map((node) => node.connections);
+			saveObj = {
+				type,
+				nodes: saveNodesArr,
+			};
+		}
+
+		const fileData = JSON.stringify(saveObj);
+		let userFileName = prompt('Enter filename:');
+		if (!userFileName) {
+			userFileName = 'graph';
+		}
+		const blob = new Blob([fileData], { type: 'text/plain' });
+		saveAs(blob, userFileName + format);
+	}
+
 	return (
 		<div className={styles.toolbar}>
 			<div className={styles.toolsWrapper}>
 				<ToolBtn
-					onClick={onSelectMode}
+					onClick={() => setMode('create')}
 					tooltipText="Create mode"
 					active={true}
-					pressed={selectMode}
+					pressed={mode === 'create'}
 				>
 					<PointerIcon />
 				</ToolBtn>
 				<ToolBtn
-					onClick={onWeightMode}
+					onClick={() => setMode('weight')}
 					tooltipText="Weight mode"
 					active={true}
-					pressed={weightMode}
+					pressed={mode === 'weight'}
 				>
 					<HashIcon />
 				</ToolBtn>
 				<ToolBtn
-					onClick={() => onScale('up')}
+					onClick={() => setMode('scaleup')}
 					tooltipText="Upscale mode"
 					active={true}
-					pressed={scaleModeUp}
+					pressed={mode === 'scaleup'}
 				>
 					<ArrowUpIcon />
 				</ToolBtn>
 				<ToolBtn
-					onClick={() => onScale('down')}
+					onClick={() => setMode('scaledown')}
 					tooltipText="Downscale mode"
 					active={true}
-					pressed={scaleModeDown}
+					pressed={mode === 'scaledown'}
 				>
 					<ArrowDownIcon />
 				</ToolBtn>
 				<ToolBtn
-					onClick={onDeleteMode}
+					onClick={() => setMode('delete')}
 					tooltipText="Delete mode"
 					active={true}
-					pressed={deleteMode}
+					pressed={mode === 'delete'}
 				>
 					<TrashIcon />
 				</ToolBtn>
 				<ToolBtn
-					onClick={onColorMode}
+					onClick={() => setMode('color')}
 					tooltipText="Color mode"
 					active={true}
-					pressed={colorMode}
+					pressed={mode === 'color'}
 				>
 					<FillIcon />
 				</ToolBtn>
@@ -302,12 +246,12 @@ function Toolbar({
 							choices={[
 								{
 									text: '.json',
-									func: onSaveGraphJSON,
+									func: () => onSaveGraph('.json'),
 									tooltip: 'Save with full settings',
 								},
 								{
 									text: '.txt',
-									func: onSaveGraphTXT,
+									func: () => onSaveGraph('.txt'),
 									tooltip: 'Save only array',
 								},
 							]}
@@ -316,7 +260,7 @@ function Toolbar({
 					)}
 				</SaveBtn>
 			</div>
-			{colorMode && (
+			{mode === 'color' && (
 				<ColorSelection
 					edgesColor={edgesColor}
 					nodesColor={nodesColor}

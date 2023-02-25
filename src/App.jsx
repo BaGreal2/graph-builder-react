@@ -11,12 +11,8 @@ function App() {
 	const [nodes, setNodes] = useState([]);
 	const [edges, setEdges] = useState([]);
 	const [nodesSelected, setNodesSelected] = useState([]);
-	const [scaleMode, setScaleMode] = useState('');
 	// modes states
-	const [selectMode, setSelectMode] = useState(true);
-	const [weightMode, setWeightMode] = useState(false);
-	const [deleteMode, setDeleteMode] = useState(false);
-	const [colorMode, setColorMode] = useState(false);
+	const [mode, setMode] = useState('create');
 	const [algorithm, setAlgorithm] = useState('');
 	// color states
 	const [nodesColor, setNodesColor] = useState('#2a507e');
@@ -40,9 +36,8 @@ function App() {
 					e.layerY > node.y - node.radius &&
 					e.layerY < node.y + node.radius
 				);
-			}) ||
-			weightMode ||
-			scaleMode !== ''
+			}) &&
+			mode === 'create'
 		) {
 			return;
 		}
@@ -67,21 +62,12 @@ function App() {
 				setNodesSelected={setNodesSelected}
 				setNodes={setNodes}
 				setEdges={setEdges}
-				deleteMode={deleteMode}
-				setDeleteMode={setDeleteMode}
-				selectMode={selectMode}
-				setSelectMode={setSelectMode}
-				weightMode={weightMode}
-				setWeightMode={setWeightMode}
-				scaleMode={scaleMode}
-				setScaleMode={setScaleMode}
-				colorMode={colorMode}
-				setColorMode={setColorMode}
+				mode={mode}
+				setMode={setMode}
 				nodesColor={nodesColor}
 				setNodesColor={setNodesColor}
 				edgesColor={edgesColor}
 				setEdgesColor={setEdgesColor}
-				connectionActive={nodesSelected.length > 1}
 				type={type}
 				setType={setType}
 				setAlgorithm={setAlgorithm}
@@ -90,7 +76,7 @@ function App() {
 				width={window.innerWidth - 50}
 				height={window.innerHeight}
 				className="stage"
-				onClick={(e) => selectMode && onCreateNode(e.evt)}
+				onClick={(e) => mode === 'create' && onCreateNode(e.evt)}
 			>
 				<Layer>
 					{edges.map((edge, id) => {
@@ -98,8 +84,7 @@ function App() {
 							<Edge
 								key={id}
 								edge={edge}
-								weightMode={weightMode}
-								deleteMode={deleteMode}
+								mode={mode}
 								edgesColor={edgesColor}
 								nodes={nodes}
 								setNodes={setNodes}
@@ -118,8 +103,7 @@ function App() {
 								setNodes={setNodes}
 								edges={edges}
 								setEdges={setEdges}
-								scaleMode={scaleMode}
-								deleteMode={deleteMode}
+								mode={mode}
 								nodesColor={nodesColor}
 								type={type}
 								viewVisited={viewVisited}
