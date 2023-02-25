@@ -9,7 +9,7 @@ import {
 	HashIcon,
 	PointerIcon,
 	TrashIcon,
-} from '../../assets/fonts/icons';
+} from '../../assets/icons';
 import { deepFirstSearch, generateEdges } from '../../helpers';
 import Choice from '../Choice';
 import ColorSelection from '../ColorSelection';
@@ -41,8 +41,7 @@ function Toolbar({
 	connectionActive,
 	type,
 	setType,
-	setViewVisited,
-	setViewDead,
+	setAlgorithm,
 }) {
 	const [showChoiceColor, setShowChoiceColor] = useState(false);
 	const [showChoiceSave, setShowChoiceSave] = useState(false);
@@ -94,6 +93,7 @@ function Toolbar({
 	}
 
 	function onScale(mode) {
+		setAlgorithm('');
 		setSelectMode(false);
 		setWeightMode(false);
 		setDeleteMode(false);
@@ -102,6 +102,7 @@ function Toolbar({
 
 	function onWeightMode() {
 		setScaleMode('');
+		setAlgorithm('');
 		setSelectMode(false);
 		setDeleteMode(false);
 		setColorMode(false);
@@ -110,6 +111,7 @@ function Toolbar({
 
 	function onSelectMode() {
 		setScaleMode('');
+		setAlgorithm('');
 		setWeightMode(false);
 		setDeleteMode(false);
 		setColorMode(false);
@@ -117,6 +119,7 @@ function Toolbar({
 	}
 	function onDeleteMode() {
 		setScaleMode('');
+		setAlgorithm('');
 		setWeightMode(false);
 		setSelectMode(false);
 		setColorMode(false);
@@ -124,10 +127,23 @@ function Toolbar({
 	}
 	function onColorMode() {
 		setScaleMode('');
+		setAlgorithm('');
 		setWeightMode(false);
 		setSelectMode(false);
 		setDeleteMode(false);
 		setColorMode((prev) => !prev);
+	}
+
+	function onAlgorithmMode(algorithm) {
+		if (nodes.length === 0) {
+			return;
+		}
+		setScaleMode('');
+		setWeightMode(false);
+		setSelectMode(false);
+		setDeleteMode(false);
+		setColorMode(false);
+		setAlgorithm(algorithm);
 	}
 
 	function onSaveGraphJSON() {
@@ -171,22 +187,6 @@ function Toolbar({
 		setType('undirect');
 		setShowChoiceColor(false);
 		onConnect('undirect');
-	}
-
-	function onDFS() {
-		const n = nodes.length;
-		let visited = new Array(n).fill(false);
-		let deadEnds = new Array(n).fill(false);
-		console.log([...visited]);
-		deepFirstSearch(
-			nodes,
-			visited,
-			deadEnds,
-			setViewVisited,
-			setViewDead,
-			nodes[3]
-		);
-		console.log([...visited]);
 	}
 
 	return (
@@ -252,7 +252,7 @@ function Toolbar({
 							choices={[
 								{
 									text: 'DFS',
-									func: onDFS,
+									func: () => onAlgorithmMode('dfs'),
 									tooltip: 'Deep First Search',
 								},
 							]}

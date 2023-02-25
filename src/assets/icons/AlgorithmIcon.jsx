@@ -1,10 +1,10 @@
 export default function AlgorithmIcon() {
 	return (
 		<svg
-			width="30"
-			height="30"
+			width="700"
+			height="60"
 			version="1.1"
-			viewBox="0 0 700 700"
+			viewBox="0 -60 700 700"
 			xmlns="http://www.w3.org/2000/svg"
 			xmlnsXlink="http://www.w3.org/1999/xlink"
 			fill="currentColor"

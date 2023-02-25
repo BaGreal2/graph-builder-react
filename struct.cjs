@@ -33,6 +33,9 @@ fs.readdir(folderPath, (err, files) => {
 	let writeStr = '';
 
 	fileNames.forEach((fileObj) => {
+		if (fileObj.nameWithExt === 'index.js') {
+			return;
+		}
 		writeStr += `export {default as ${fileObj.nameWithoutExt}} from './${fileObj.nameWithExt}';`;
 	});
 

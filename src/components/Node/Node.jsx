@@ -1,6 +1,6 @@
 import React from 'react';
 import { Circle, Group, Text } from 'react-konva';
-import { countColor, generateEdges } from '../../helpers';
+import { countColor, deepFirstSearch, generateEdges } from '../../helpers';
 
 const Node = React.memo(
 	({
@@ -16,6 +16,9 @@ const Node = React.memo(
 		type,
 		viewVisited,
 		viewDead,
+		setViewVisited,
+		setViewDead,
+		algorithm,
 	}) => {
 		// normal: #2a507e
 		// selected: #c28547
@@ -91,6 +94,13 @@ const Node = React.memo(
 			setNodes([...nodesCopy]);
 		}
 
+		function onAlgorithm() {
+			switch (algorithm) {
+				case 'dfs':
+					deepFirstSearch(nodes, setViewVisited, setViewDead, nodes[index - 1]);
+			}
+		}
+
 		function onClick() {
 			if (scaleMode) {
 				onScale(scaleMode);
@@ -98,6 +108,10 @@ const Node = React.memo(
 			}
 			if (deleteMode) {
 				onDelete();
+				return;
+			}
+			if (algorithm !== '') {
+				onAlgorithm();
 				return;
 			}
 			onSelect();

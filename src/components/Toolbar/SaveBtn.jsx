@@ -1,4 +1,4 @@
-import { SaveIcon } from '../../assets/fonts/icons';
+import { SaveIcon } from '../../assets/icons';
 import ToolBtn from './ToolBtn';
 
 function SaveBtn({ tooltipText, onShowChoice, children }) {

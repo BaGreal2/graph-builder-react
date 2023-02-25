@@ -17,6 +17,7 @@ function App() {
 	const [weightMode, setWeightMode] = useState(false);
 	const [deleteMode, setDeleteMode] = useState(false);
 	const [colorMode, setColorMode] = useState(false);
+	const [algorithm, setAlgorithm] = useState('');
 	// color states
 	const [nodesColor, setNodesColor] = useState('#2a507e');
 	const [edgesColor, setEdgesColor] = useState('#ffffff');
@@ -28,6 +29,8 @@ function App() {
 
 	// creating node on field click
 	function onCreateNode(e) {
+		setViewVisited([]);
+		setViewDead([]);
 		// checkng if node exist on click spot or other mods enabled
 		if (
 			nodes.some((node) => {
@@ -81,8 +84,7 @@ function App() {
 				connectionActive={nodesSelected.length > 1}
 				type={type}
 				setType={setType}
-				setViewVisited={setViewVisited}
-				setViewDead={setViewDead}
+				setAlgorithm={setAlgorithm}
 			/>
 			<Stage
 				width={window.innerWidth - 50}
@@ -122,6 +124,9 @@ function App() {
 								type={type}
 								viewVisited={viewVisited}
 								viewDead={viewDead}
+								setViewVisited={setViewVisited}
+								setViewDead={setViewDead}
+								algorithm={algorithm}
 							/>
 						);
 					})}
