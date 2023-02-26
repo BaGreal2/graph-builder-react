@@ -1,6 +1,7 @@
 import React from 'react';
 import { Circle, Group, Text } from 'react-konva';
-import { countColor, deepFirstSearch, generateEdges } from '../../helpers';
+import { deepFirstSearch } from '../../algorithms';
+import { countColor, generateEdges } from '../../helpers';
 
 const Node = React.memo(
 	({

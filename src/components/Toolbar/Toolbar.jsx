@@ -10,7 +10,7 @@ import {
 	PointerIcon,
 	TrashIcon,
 } from '../../assets/icons';
-import { deepFirstSearch, generateEdges } from '../../helpers';
+import { generateEdges } from '../../helpers';
 import Choice from '../Choice';
 import ColorSelection from '../ColorSelection';
 import UploadBtn from '../UploadBtn';
