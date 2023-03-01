@@ -27,7 +27,8 @@ function UploadBtn({
 	// updating states to loaded .txt file
 	function onReaderLoadTXT(e) {
 		const res = JSON.parse(e.target.result);
-		const nodesRaw = res.nodes;
+		// const nodesRaw = res.nodes;
+		const nodesRaw = res;
 		const nodesNew = nodesRaw.map((node, idx) => {
 			return {
 				index: idx + 1,
@@ -37,17 +38,17 @@ function UploadBtn({
 				connections: node,
 			};
 		});
-		const type = res.type;
-		if (type === '') {
-			setFirstClick(true);
-		} else {
-			setFirstClick(false);
-		}
+		// const type = res.type;
+		setFirstClick(true);
+		// if (type === '') {
+		// } else {
+		// 	setFirstClick(false);
+		// }
 		setNodes([...nodesNew]);
-		setType(type);
+		// setType(type);
 		setNodesColor('#2a507e');
 		setEdgesColor('#ffffff');
-		generateEdges(nodesNew, type, setEdges);
+		generateEdges(nodesNew, setEdges);
 	}
 
 	// updating states to loaded .json file
@@ -63,7 +64,7 @@ function UploadBtn({
 		setType(type);
 		setNodesColor(nodesColor);
 		setEdgesColor(edgesColor);
-		generateEdges(nodes, type, setEdges);
+		generateEdges(nodes, setEdges);
 	}
 	return (
 		<div

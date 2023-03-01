@@ -33,7 +33,6 @@ const Edge = React.memo(
 				nodesCopy[to - 1].connections[index2 - 1][1] = weight;
 			}
 
-			console.log(nodesCopy);
 			setWeightCurr(userWeight);
 			setNodes([...nodesCopy]);
 		}
@@ -46,7 +45,7 @@ const Edge = React.memo(
 					(connection) => connection[0] !== from && connection[0] !== to
 				);
 			});
-			generateEdges(nodesCopy, type, setEdges);
+			generateEdges(nodesCopy, setEdges);
 			setNodes([...nodesCopy]);
 		}
 

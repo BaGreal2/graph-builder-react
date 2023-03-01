@@ -64,6 +64,17 @@ function Toolbar({
 				node2.connections.some((connection) => {
 					return connection[0] === node1.index;
 				}) &&
+				!node1.connections.some((connection) => {
+					return connection[0] === node2.index;
+				})
+			) {
+				nodesCopy[node1.index - 1].connections.push([node2.index, null]);
+				continue;
+			}
+			if (
+				node2.connections.some((connection) => {
+					return connection[0] === node1.index;
+				}) &&
 				node1.connections.some((connection) => {
 					return connection[0] === node2.index;
 				})
@@ -79,7 +90,7 @@ function Toolbar({
 		}
 
 		setNodesSelected([]);
-		generateEdges(nodesCopy, type, setEdges);
+		generateEdges(nodesCopy, setEdges);
 		setNodes([...nodesCopy]);
 	}
 
@@ -118,10 +129,11 @@ function Toolbar({
 			};
 		} else {
 			const saveNodesArr = nodes.map((node) => node.connections);
-			saveObj = {
-				type,
-				nodes: saveNodesArr,
-			};
+			saveObj = saveNodesArr;
+			// saveObj = {
+			// 	type,
+			// 	nodes: saveNodesArr,
+			// };
 		}
 
 		const fileData = JSON.stringify(saveObj);

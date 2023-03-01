@@ -1,6 +1,6 @@
 import getConnectorPoints from './getConnectorPoints';
 
-export default function generateEdges(nodesArr, type, setEdges) {
+export default function generateEdges(nodesArr, setEdges) {
 	const newEdges = [];
 	nodesArr.map((node) => {
 		node.connections.map((connection) => {
@@ -8,6 +8,14 @@ export default function generateEdges(nodesArr, type, setEdges) {
 			const node2 = nodesArr.find((node) => node.index === connection[0]);
 			if (!node2) {
 				return;
+			}
+			let thisType = 'direct';
+			if (
+				node2.connections.some((connection) => {
+					return connection[0] === node1.index;
+				})
+			) {
+				thisType = 'undirect';
 			}
 
 			const newEdge = {
@@ -17,7 +25,7 @@ export default function generateEdges(nodesArr, type, setEdges) {
 				index2: node2.connections.length,
 				weight: connection[1],
 				points: getConnectorPoints(node1, node2),
-				type: type,
+				type: thisType,
 			};
 			newEdges.push(newEdge);
 		});

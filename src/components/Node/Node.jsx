@@ -13,7 +13,6 @@ const Node = React.memo(
 		setEdges,
 		mode,
 		nodesColor,
-		type,
 		viewVisited,
 		viewDead,
 		setViewVisited,
@@ -96,7 +95,7 @@ const Node = React.memo(
 				});
 			});
 
-			generateEdges(nodesCopy, type, setEdges);
+			generateEdges(nodesCopy, setEdges);
 			setNodes([...nodesCopy]);
 		}
 
@@ -136,7 +135,7 @@ const Node = React.memo(
 			nodesCopy[index - 1].x = e.target.attrs.x;
 			nodesCopy[index - 1].y = e.target.attrs.y;
 
-			generateEdges(nodesCopy, type, setEdges);
+			generateEdges(nodesCopy, setEdges);
 			setNodes([...nodesCopy]);
 		}
 
