@@ -1,12 +1,14 @@
 import { saveAs } from 'file-saver';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	AlgorithmIcon,
 	ArrowDownIcon,
+	ArrowRightIcon,
 	ArrowUpIcon,
 	ConnectionsIcon,
 	FillIcon,
 	HashIcon,
+	LineIcon,
 	PointerIcon,
 	TrashIcon,
 } from '../../assets/icons';
@@ -41,6 +43,7 @@ function Toolbar({
 	const [firstClick, setFirstClick] = useState(true);
 	// checking if connection button needs to be active
 	const connectionActive = nodesSelected.length > 1;
+	const typeActive = nodes.some((node) => node.connections.length > 0);
 
 	// connecting selected edges
 	function onConnect(type) {
@@ -68,9 +71,16 @@ function Toolbar({
 					return connection[0] === node2.index;
 				})
 			) {
-				nodesCopy[node1.index - 1].connections.push([node2.index, null]);
+				nodesCopy[node1.index - 1].connections.push([
+					node2.index,
+					node2.connections.find((connection) => {
+						return connection[0] === node1.index;
+					})[1],
+				]);
+
 				continue;
 			}
+
 			if (
 				node2.connections.some((connection) => {
 					return connection[0] === node1.index;
@@ -141,6 +151,64 @@ function Toolbar({
 		saveAs(blob, userFileName + format);
 	}
 
+	function toggleType() {
+		if (type === 'undirect') {
+			setType('direct');
+		} else {
+			setType('undirect');
+		}
+	}
+
+	function toggleScale() {
+		switch (mode) {
+			case 'scaleup':
+				setMode('scaledown');
+				break;
+			case 'scaledown':
+				setMode('scaleup');
+				break;
+			default:
+				setMode('scaleup');
+				break;
+		}
+	}
+
+	function keyPressHandler({ key }) {
+		switch (key) {
+			case 'c':
+				connectionActive && onConnect(type);
+				break;
+			case 'w':
+				setMode('weight');
+				break;
+			case 's':
+				setMode('create');
+				break;
+			case 'u':
+				toggleScale();
+				break;
+			case 'f':
+				setMode('color');
+				break;
+			case 'd':
+				setMode('delete');
+				break;
+			case 't':
+				typeActive && toggleType();
+				break;
+			default:
+				break;
+		}
+	}
+
+	useEffect(() => {
+		window.addEventListener('keydown', keyPressHandler);
+
+		return () => {
+			window.removeEventListener('keydown', keyPressHandler);
+		};
+	}, [firstClick, showChoiceColor, nodesSelected, type, mode]);
+
 	return (
 		<div className={styles.toolbar}>
 			<div className={styles.toolsWrapper}>
@@ -161,21 +229,14 @@ function Toolbar({
 					<HashIcon />
 				</ToolBtn>
 				<ToolBtn
-					onClick={() => setMode('scaleup')}
-					tooltipText="Upscale mode"
+					onClick={toggleScale}
+					tooltipText="Scale mode"
 					active={true}
-					pressed={mode === 'scaleup'}
+					pressed={mode === 'scaleup' || mode === 'scaledown'}
 				>
-					<ArrowUpIcon />
+					{mode === 'scaledown' ? <ArrowDownIcon /> : <ArrowUpIcon />}
 				</ToolBtn>
-				<ToolBtn
-					onClick={() => setMode('scaledown')}
-					tooltipText="Downscale mode"
-					active={true}
-					pressed={mode === 'scaledown'}
-				>
-					<ArrowDownIcon />
-				</ToolBtn>
+
 				<ToolBtn
 					onClick={() => setMode('delete')}
 					tooltipText="Delete mode"
@@ -232,6 +293,16 @@ function Toolbar({
 						/>
 					)}
 				</ToolBtn>
+				{type !== '' && (
+					<ToolBtn
+						onClick={toggleType}
+						tooltipText={'Change connection type'}
+						active={true}
+					>
+						{type === 'direct' && <ArrowRightIcon />}
+						{type === 'undirect' && <LineIcon />}
+					</ToolBtn>
+				)}
 			</div>
 			<div className={styles.save}>
 				<UploadBtn

@@ -9,6 +9,9 @@ export default function generateEdges(nodesArr, setEdges) {
 			if (!node2) {
 				return;
 			}
+			let index1 = node1.connections.length > 0 ? node1.connections.length : 1;
+			let index2 = node2.connections.length > 0 ? node2.connections.length : 1;
+
 			let thisType = 'direct';
 			if (
 				node2.connections.some((connection) => {
@@ -21,8 +24,8 @@ export default function generateEdges(nodesArr, setEdges) {
 			const newEdge = {
 				from: node1.index,
 				to: node2.index,
-				index1: node1.connections.length,
-				index2: node2.connections.length,
+				index1: index1,
+				index2: index2,
 				weight: connection[1],
 				points: getConnectorPoints(node1, node2),
 				type: thisType,

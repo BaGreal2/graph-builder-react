@@ -73,6 +73,8 @@ const Node = React.memo(
 
 			const validRad = node.radius + delta >= 20;
 			nodesCopy[index - 1].radius += validRad ? delta : 0;
+
+			generateEdges(nodesCopy, setEdges);
 			setNodes([...nodesCopy]);
 		}
 

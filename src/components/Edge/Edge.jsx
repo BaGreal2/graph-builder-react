@@ -29,7 +29,11 @@ const Edge = React.memo(
 			}
 
 			nodesCopy[from - 1].connections[index1 - 1][1] = weight;
-			if (nodesCopy[to - 1].connections[index2 - 1][0] === from) {
+
+			if (
+				nodesCopy[to - 1].connections[index2 - 1] &&
+				nodesCopy[to - 1].connections[index2 - 1][0] === from
+			) {
 				nodesCopy[to - 1].connections[index2 - 1][1] = weight;
 			}
 

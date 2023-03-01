@@ -1,10 +1,1 @@
-export { default as AlgorithmIcon } from './AlgorithmIcon.jsx';
-export { default as ArrowDownIcon } from './ArrowDownIcon.jsx';
-export { default as ArrowUpIcon } from './ArrowUpIcon.jsx';
-export { default as ConnectionsIcon } from './ConnectionsIcon.jsx';
-export { default as FillIcon } from './FillIcon.jsx';
-export { default as HashIcon } from './HashIcon.jsx';
-export { default as PointerIcon } from './PointerIcon.jsx';
-export { default as SaveIcon } from './SaveIcon.jsx';
-export { default as TrashIcon } from './TrashIcon.jsx';
-export { default as UploadIcon } from './UploadIcon.jsx';
+export {default as AlgorithmIcon} from './AlgorithmIcon.jsx';export {default as ArrowDownIcon} from './ArrowDownIcon.jsx';export {default as ArrowRightIcon} from './ArrowRightIcon.jsx';export {default as ArrowUpIcon} from './ArrowUpIcon.jsx';export {default as ConnectionsIcon} from './ConnectionsIcon.jsx';export {default as FillIcon} from './FillIcon.jsx';export {default as HashIcon} from './HashIcon.jsx';export {default as LineIcon} from './LineIcon.jsx';export {default as PointerIcon} from './PointerIcon.jsx';export {default as SaveIcon} from './SaveIcon.jsx';export {default as TrashIcon} from './TrashIcon.jsx';export {default as UploadIcon} from './UploadIcon.jsx';
