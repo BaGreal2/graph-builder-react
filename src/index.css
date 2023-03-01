@@ -9,7 +9,10 @@
 	padding: 0;
 	box-sizing: border-box;
 	font-family: 'FiraCode';
-	/* overflow: hidden; */
+}
+
+body {
+	overflow: hidden;
 }
 
 a {
@@ -27,6 +30,10 @@ a {
 .app {
 	display: flex;
 	flex-direction: row;
+}
+
+.tooltip {
+	z-index: 1000;
 }
 
 input[type='color'] {
