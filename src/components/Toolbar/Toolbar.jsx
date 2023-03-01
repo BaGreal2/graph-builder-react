@@ -40,7 +40,7 @@ function Toolbar({
 	const [showAlgorithms, setShowAlgorithms] = useState(false);
 	const [firstClick, setFirstClick] = useState(true);
 	// checking if connection button needs to be active
-	const connectionActive = nodes.length > 1;
+	const connectionActive = nodesSelected.length > 1;
 
 	// connecting selected edges
 	function onConnect(type) {
@@ -130,10 +130,6 @@ function Toolbar({
 		} else {
 			const saveNodesArr = nodes.map((node) => node.connections);
 			saveObj = saveNodesArr;
-			// saveObj = {
-			// 	type,
-			// 	nodes: saveNodesArr,
-			// };
 		}
 
 		const fileData = JSON.stringify(saveObj);

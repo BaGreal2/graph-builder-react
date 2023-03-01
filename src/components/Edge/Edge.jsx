@@ -40,11 +40,14 @@ const Edge = React.memo(
 		// deleting current edge
 		function onDelete() {
 			const nodesCopy = [...nodes];
-			nodesCopy.forEach((node) => {
-				node.connections = node.connections.filter(
-					(connection) => connection[0] !== from && connection[0] !== to
-				);
-			});
+
+			nodesCopy[from - 1].connections = nodesCopy[from - 1].connections.filter(
+				(connection) => connection[0] !== from && connection[0] !== to
+			);
+			nodesCopy[to - 1].connections = nodesCopy[to - 1].connections.filter(
+				(connection) => connection[0] !== from && connection[0] !== to
+			);
+
 			generateEdges(nodesCopy, setEdges);
 			setNodes([...nodesCopy]);
 		}
